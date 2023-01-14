@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">FinalProjectAndroid</string>
+    <string name="register_now">Register Now</string>
+    <string name="login">Sign In</string>
+    <string name="email">Enter your E-mail</string>
+    <string name="username">Enter user name</string>
+    <string name="password">Enter password</string>
+    <string name="conf_password">Confirm password</string>
+</resources>
