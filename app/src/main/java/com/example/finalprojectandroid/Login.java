@@ -3,8 +3,12 @@ package com.example.finalprojectandroid;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,47 +22,70 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 public class Login extends AppCompatActivity {
-
-    DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReferenceFromUrl("https://finalprojectandroind-default-rtdb.firebaseio.com/");
+    private SharedPreferences sharedPreferences;
+    private static final String LOGGED_IN = "logged_in";
+    private static final String USERNAME = "username";
+    private static final String SCORE = "0";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference databaseReference = firebaseDatabase.getReferenceFromUrl("https://finalprojectandroind-default-rtdb.firebaseio.com/").child("users");
+
         final EditText usernameET  = findViewById(R.id.username);
         final EditText passwordET  = findViewById(R.id.password);
         final Button   loginBtn    = findViewById(R.id.loginButton);
         final TextView regNowBtn   = findViewById(R.id.register_now);
 
+        sharedPreferences = getSharedPreferences("app_pref", Context.MODE_PRIVATE);
+
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                final String username = usernameET.getText().toString();
-                final String password = passwordET.getText().toString();
+                final String username = usernameET.getText().toString().trim();
+                final String password = passwordET.getText().toString().trim();
 
-            databaseReference.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if(snapshot.hasChild(username)){
-                        final String getPassword = snapshot.child(username).child("password").getValue(String.class);
+                if (TextUtils.isEmpty(username)) {
+                    Toast.makeText(Login.this, "Enter Username!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
-                        if(getPassword.equals(password)){
-                            Toast.makeText(Login.this, "Login successfully", Toast.LENGTH_LONG).show();
+                if (TextUtils.isEmpty(password)) {
+                    Toast.makeText(Login.this, "Enter password!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        boolean userExists = false;
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            User user = snapshot.getValue(User.class);
+
+                            if (user.getUsername().equals(username) && user.getPassword().equals(password)) {
+                                userExists = true;
+                                break;
+                            }
+                        }
+                        if (userExists) {
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putBoolean(LOGGED_IN, true);
+                            editor.putString(USERNAME, username);
+                            editor.putString(SCORE, "0");
+                            editor.apply();
                             startActivity(new Intent(Login.this, MainActivity.class));
                         }
-                        else{
-                            Toast.makeText(Login.this, "Check Username or Password", Toast.LENGTH_LONG).show();
-                        }
                     }
-                }
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
-                }
-            });
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Toast.makeText(Login.this, "Login failed, please try again.", Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
         });
 
