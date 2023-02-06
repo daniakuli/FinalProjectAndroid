@@ -56,6 +56,7 @@ public class EditProfile extends Fragment {
     String imgPath = "";
     Uri filePath;
     ImageView imgEdit;
+    Boolean picChanged = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -113,7 +114,12 @@ public class EditProfile extends Fragment {
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                if(picChanged){
+                    imgPath = "https://firebasestorage.googleapis.com/v0/b/finalprojectandroind.appspot.com/o/images%2F" + uploadImage() + "?alt=media";
+                    Toast.makeText(getActivity(),
+                            "Profile picure Changed",
+                                  Toast.LENGTH_LONG).show();
+                }
                 User editUser = new User(usernameET.getText().toString(),
                                         emailET.getText().toString(),
                                         pass,
@@ -149,6 +155,7 @@ public class EditProfile extends Fragment {
                 public void onActivityResult(ActivityResult result) {
                     if (result.getResultCode() == Activity.RESULT_OK &&
                             result.getData() != null) {
+                        picChanged = true;
                         Intent intent = result.getData();
                         filePath = intent.getData();
                         try{
@@ -176,19 +183,13 @@ public class EditProfile extends Fragment {
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        Toast.makeText(getActivity(),
-                                "Image uploaded",
-                                Toast.LENGTH_LONG).show();
+                       Log.d("ok", "Working");
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Toast
-                                .makeText(getActivity(),
-                                        "Failed " + e.getMessage(),
-                                        Toast.LENGTH_SHORT)
-                                .show();
+                       Log.e("not ok","Not working");
                     }
                 });
         return imgName;

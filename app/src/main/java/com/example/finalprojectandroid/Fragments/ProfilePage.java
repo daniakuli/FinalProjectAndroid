@@ -73,7 +73,6 @@ public class ProfilePage extends Fragment {
 
                     if (user.getUsername()
                             .equals(sharedPreferences.getString(USERNAME,""))) {
-                        Log.d("good",user.getImage());
                         Picasso.get().load(user.getImage()).into(pProfileImage);
                         break;
                     }
@@ -118,6 +117,7 @@ public class ProfilePage extends Fragment {
                         .commit();
             }
         });
+
 
         return view;
     }

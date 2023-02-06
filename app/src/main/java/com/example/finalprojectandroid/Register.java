@@ -146,6 +146,7 @@ public class Register extends AppCompatActivity {
                 storageReference.child(
                         "images/" + imgName);
 
+        Log.d("check",filePath.toString());
         ref.putFile(filePath)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
