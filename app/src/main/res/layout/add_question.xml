@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Register">
+
+    <EditText
+        android:id="@+id/option3"
+        android:layout_width="215dp"
+        android:layout_height="41dp"
+        android:layout_marginTop="24dp"
+        android:autofillHints="emailAddress"
+        android:hint="Option 3"
+        android:inputType="textEmailAddress"
+        android:minHeight="48dp"
+        android:paddingStart="20dp"
+        android:paddingEnd="0dp"
+        app:layout_constraintEnd_toEndOf="@+id/profilePicReg"
+        app:layout_constraintStart_toStartOf="@+id/regTxt"
+        app:layout_constraintTop_toBottomOf="@+id/option2" />
+
+    <TextView
+        android:id="@+id/regTxt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="136dp"
+        android:fontFamily="sans-serif-condensed"
+        android:gravity="center"
+        android:text="Add a Question"
+        android:textColor="#CC000000"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@id/profilePicReg"
+        app:layout_constraintTop_toTopOf="@+id/addProfilePic" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/insertButton"
+        android:layout_width="215dp"
+        android:layout_height="41dp"
+        android:text="post question"
+        tools:layout_editor_absoluteX="98dp"
+        tools:layout_editor_absoluteY="659dp" />
+
+    <EditText
+        android:id="@+id/correctOption"
+        android:layout_width="215dp"
+        android:layout_height="41dp"
+        android:layout_marginTop="20dp"
+        android:autofillHints="emailAddress"
+        android:hint="Correct Option"
+        android:inputType="textEmailAddress"
+        android:minHeight="48dp"
+        android:paddingStart="20dp"
+        android:paddingEnd="0dp"
+        app:layout_constraintEnd_toEndOf="@+id/profilePicReg"
+        app:layout_constraintStart_toStartOf="@+id/regTxt"
+        app:layout_constraintTop_toBottomOf="@+id/regTxt" />
+
+    <EditText
+        android:id="@+id/option2"
+        android:layout_width="215dp"
+        android:layout_height="41dp"
+        android:layout_marginTop="4dp"
+        android:autofillHints="emailAddress"
+        android:hint="Option 2"
+        android:inputType="textEmailAddress"
+        android:minHeight="48dp"
+        android:paddingStart="20dp"
+        android:paddingEnd="0dp"
+        app:layout_constraintEnd_toEndOf="@+id/profilePicReg"
+        app:layout_constraintStart_toStartOf="@+id/regTxt"
+        app:layout_constraintTop_toBottomOf="@+id/correctOption" />
+
+    <EditText
+        android:id="@+id/country"
+        android:layout_width="215dp"
+        android:layout_height="41dp"
+        android:autofillHints="emailAddress"
+        android:hint="Country"
+        android:inputType="textEmailAddress"
+        android:minHeight="48dp"
+        android:paddingStart="20dp"
+        android:paddingEnd="0dp"
+        app:layout_constraintEnd_toEndOf="@+id/profilePicReg"
+        app:layout_constraintStart_toStartOf="@+id/regTxt"
+        tools:layout_editor_absoluteY="538dp" />
+
+    <EditText
+        android:id="@+id/city"
+        android:layout_width="215dp"
+        android:layout_height="41dp"
+        android:layout_marginTop="8dp"
+        android:autofillHints="emailAddress"
+        android:hint="City"
+        android:inputType="textEmailAddress"
+        android:minHeight="48dp"
+        android:paddingStart="20dp"
+        android:paddingEnd="0dp"
+        app:layout_constraintEnd_toEndOf="@+id/profilePicReg"
+        app:layout_constraintStart_toStartOf="@+id/regTxt"
+        app:layout_constraintTop_toBottomOf="@+id/country" />
+
+    <EditText
+        android:id="@+id/option4"
+        android:layout_width="215dp"
+        android:layout_height="41dp"
+        android:layout_marginTop="16dp"
+        android:autofillHints="emailAddress"
+        android:hint="Option 4"
+        android:inputType="textEmailAddress"
+        android:minHeight="48dp"
+        android:paddingStart="20dp"
+        android:paddingEnd="0dp"
+        app:layout_constraintEnd_toEndOf="@+id/profilePicReg"
+        app:layout_constraintStart_toStartOf="@+id/regTxt"
+        app:layout_constraintTop_toBottomOf="@+id/option3" />
+
+    <ImageView
+        android:id="@+id/profilePicReg"
+        android:layout_width="119dp"
+        android:layout_height="112dp"
+        android:layout_marginTop="60dp"
+        android:contentDescription="@string/profilePic"
+        android:scaleType="fitCenter"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/addProfilePic"
+        android:layout_width="54dp"
+        android:layout_height="54dp"
+        android:layout_marginStart="208dp"
+        android:layout_marginTop="80dp"
+        android:contentDescription="@string/add"
+        app:layout_constraintRight_toRightOf="@id/profilePicReg"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/profilePicReg"
+        app:srcCompat="@android:drawable/ic_menu_add" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
