@@ -11,21 +11,20 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
+
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.finalprojectandroid.Adapters.ProfileAdapter;
 import com.example.finalprojectandroid.Login;
-import com.example.finalprojectandroid.MainActivity;
+import com.example.finalprojectandroid.OnGetDataListener;
+import com.example.finalprojectandroid.OnItemClickListener;
+import com.example.finalprojectandroid.Pictures;
 import com.example.finalprojectandroid.R;
-import com.example.finalprojectandroid.SaveSharedPreference;
 import com.example.finalprojectandroid.User;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -34,10 +33,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class ProfilePage extends Fragment {
+public class ProfilePage extends Fragment{
 
     private static final String USERNAME = "username";
     private static final String SCORE = "0";
@@ -47,7 +47,13 @@ public class ProfilePage extends Fragment {
     private Button pEditButton, pLogOut;
     private SharedPreferences sharedPreferences;
     private FirebaseDatabase firebaseDatabase;
+    private ProfileAdapter profileAdapter;
+    private Pictures pictures;
+    private List<Pictures> picturesList;
 
+    private String uid = "";
+    private String[] countries;
+    private String[] cities;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -63,9 +69,9 @@ public class ProfilePage extends Fragment {
         pEditButton       = view.findViewById(R.id.edit_profile);
 
         firebaseDatabase = FirebaseDatabase.getInstance();
-        DatabaseReference databaseReference = firebaseDatabase.getReferenceFromUrl("https://finalprojectandroind-default-rtdb.firebaseio.com/").child("users");
+        DatabaseReference users = firebaseDatabase.getReferenceFromUrl("https://finalprojectandroind-default-rtdb.firebaseio.com/").child("users");
 
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+        users.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
@@ -86,14 +92,38 @@ public class ProfilePage extends Fragment {
         });
 
         pUserName.setText(sharedPreferences.getString(USERNAME,""));
-
         pScore.setText(sharedPreferences.getString(SCORE,""));
 
-
-        // Set up your RecyclerView here, for example:
         pRecyclerView.setLayoutManager(new GridLayoutManager(getContext(),3));
         pRecyclerView.setHasFixedSize(true);
-        pRecyclerView.setAdapter(new ProfileAdapter(getData()));
+
+        picturesList = new ArrayList<>();
+        pictures = new Pictures();
+
+        pictures.getData(getActivity(),new OnGetDataListener() {
+            @Override
+            public void onSuccess(List<Pictures> picList) {
+                picturesList = picList;
+                profileAdapter = new ProfileAdapter(getActivity(),
+                                                    picturesList);
+                pRecyclerView.setAdapter(profileAdapter);
+                profileAdapter.setOnItemClickListener(new OnItemClickListener() {
+                    @Override
+                    public void onItemClick(int pos) {
+                        DialogFragment dialogFragment = new ImageDialogFragment();
+                        Bundle args = new Bundle();
+                        args.putString("imageUrl", picturesList.get(pos).getImage());
+                        args.putString("text1", picturesList.get(pos).getCountry());
+                        args.putString("text2", picturesList.get(pos).getCity());
+                        args.putInt("pos",pos);
+                        dialogFragment.setArguments(args);
+                        ((ImageDialogFragment) dialogFragment).setFragment(ProfilePage.this);
+                        dialogFragment.showNow(getParentFragmentManager(), "ImageDialog");
+                    }
+                });
+            }
+        }, true);
+
 
         pLogOut.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -111,6 +141,7 @@ public class ProfilePage extends Fragment {
             @Override
             public void onClick(View view) {
                 EditProfile ep = new EditProfile();
+                ((EditProfile)ep).setFragment(ProfilePage.this);
                 getParentFragmentManager().beginTransaction()
                         .replace(R.id.fragment_container,ep)
                         .addToBackStack(null)
@@ -121,44 +152,11 @@ public class ProfilePage extends Fragment {
 
         return view;
     }
-    private List<Integer> getData() {
-        // replace with your own data
-        return Arrays.asList(R.drawable.user1,
-                R.drawable.user2,
-                R.drawable.user3,
-                R.drawable.user4,
-                R.drawable.user5,
-                R.drawable.user1,
-                R.drawable.user2,
-                R.drawable.user3,
-                R.drawable.user4,
-                R.drawable.user1,
-                R.drawable.user2,
-                R.drawable.user3,
-                R.drawable.user4,
-                R.drawable.user1,
-                R.drawable.user2,
-                R.drawable.user3,
-                R.drawable.user4,
-                R.drawable.user1,
-                R.drawable.user2,
-                R.drawable.user3,
-                R.drawable.user4,
-                R.drawable.user1,
-                R.drawable.user2,
-                R.drawable.user3,
-                R.drawable.user4,
-                R.drawable.user1,
-                R.drawable.user2,
-                R.drawable.user3,
-                R.drawable.user4,
-                R.drawable.user1,
-                R.drawable.user2,
-                R.drawable.user3,
-                R.drawable.user4,
-                R.drawable.user1,
-                R.drawable.user2,
-                R.drawable.user3,
-                R.drawable.user4);
+
+    public void updateRecycler(){
+        profileAdapter.notifyDataSetChanged();
+    }
+    public void updateData(Pictures pic, int pos) {
+        profileAdapter.addData(pic,pos);
     }
 }

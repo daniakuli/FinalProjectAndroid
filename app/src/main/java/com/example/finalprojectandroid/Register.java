@@ -6,6 +6,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -21,6 +22,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.finalprojectandroid.DataBase.Pair;
+import com.example.finalprojectandroid.DataBase.UploadImages;
+import com.example.finalprojectandroid.Fragments.ImageDialogFragment;
+import com.example.finalprojectandroid.Fragments.RegDialog;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -82,6 +87,12 @@ public class Register extends AppCompatActivity {
         addPic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                /*UploadImages upImg = new UploadImages(Register.this);
+                Pair p = upImg.choosePic();
+                Log.d("checkPair","Bool: " +
+                                            p.picChanged +
+                                            " filePath: " +
+                                            p.filepath);*/
                 choosePic();
             }
         });

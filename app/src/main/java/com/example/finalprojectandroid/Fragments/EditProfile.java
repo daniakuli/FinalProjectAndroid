@@ -51,12 +51,14 @@ public class EditProfile extends Fragment {
     private FirebaseStorage storage;
     private StorageReference storageReference;
     private static final String USERNAME = "username";
-    String uid = "";
-    String pass = "";
-    String imgPath = "";
-    Uri filePath;
-    ImageView imgEdit;
-    Boolean picChanged = false;
+    private String uid = "";
+    private String pass = "";
+    private String imgPath = "";
+    private Uri filePath;
+    private ImageView imgEdit;
+    private Boolean picChanged = false;
+    private ProfilePage profilePage;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -128,6 +130,7 @@ public class EditProfile extends Fragment {
                 sharedPreferences.edit().putString(USERNAME,usernameET.
                                                               getText().
                                                               toString()).commit();
+                getProfilePage().updateRecycler();
                 getParentFragmentManager().popBackStack();
             }
         });
@@ -141,6 +144,15 @@ public class EditProfile extends Fragment {
 
         return view;
     }
+
+    public void setFragment(ProfilePage profile){
+        profilePage = profile;
+    }
+
+    public ProfilePage getProfilePage(){
+        return this.profilePage;
+    }
+
 
     private void choosePic() {
         Intent intent = new Intent();

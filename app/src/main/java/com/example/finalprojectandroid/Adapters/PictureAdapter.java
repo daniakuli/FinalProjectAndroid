@@ -1,8 +1,5 @@
 package com.example.finalprojectandroid.Adapters;
 
-import android.content.Context;
-import android.net.Uri;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,52 +9,40 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.finalprojectandroid.OnGetDataListener;
 import com.example.finalprojectandroid.OnItemClickListener;
 import com.example.finalprojectandroid.Pictures;
 import com.example.finalprojectandroid.R;
-import com.squareup.picasso.Picasso;
 
-import java.net.URI;
-import java.util.Arrays;
 import java.util.List;
 
-public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHolder> {
-    private List<Pictures> mData;
-    private Context context;
+public class PictureAdapter extends RecyclerView.Adapter<PictureAdapter.ViewHolder> {
 
+    private List<Pictures> pictures;
     public static OnItemClickListener listener;
-    public void setOnItemClickListener(OnItemClickListener listener){
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
         this.listener = listener;
     }
 
-    public ProfileAdapter(Context context, List<Pictures> pictures) {
-        this.context = context;
-        mData = pictures;
+    public PictureAdapter(List<Pictures> pictures) {
+        this.pictures = pictures;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.photo_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.photo_item, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Pictures pictures = mData.get(position);
-        Picasso.get().load(pictures.getImage()).into(holder.mImageView);
+        //Pictures
     }
 
     @Override
     public int getItemCount() {
-        return mData.size();
-    }
-
-    public void addData(Pictures pic, int pos) {
-        mData.set(pos, pic);
-        notifyDataSetChanged();
+        return 0;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -71,9 +56,9 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(listener != null){
+                    if (listener != null) {
                         int pos = getAdapterPosition();
-                        if(pos != RecyclerView.NO_POSITION){
+                        if (pos != RecyclerView.NO_POSITION) {
                             listener.onItemClick(pos);
                         }
                     }
@@ -82,3 +67,21 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
         }
     }
 }
+
+/*
+    @Override
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        Item item = items.get(position);
+
+        holder.profileImage.setImageResource(item.getProfileImage());
+        holder.itemTitle.setText(item.getTitle());
+        holder.itemDescription.setText(item.getDescription());
+    }
+
+    @Override
+    public int getItemCount() {
+        return items.size();
+    }
+}
+
+ */
