@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Fragments.ProfilePage">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?android:attr/windowBackground"
+            android:id="@+id/bar">
+
+                <androidx.appcompat.widget.Toolbar
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="?android:attr/windowBackground"
+                    android:id="@+id/toolbar">
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textSize="18sp"
+                                    android:maxLines="1"
+                                    android:textStyle="bold"
+                                    android:id="@+id/username"
+                                    android:textColor="@color/black"/>
+
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/options"
+                                    android:src="@android:drawable/button_onoff_indicator_off"
+                                    android:layout_alignParentEnd="true"
+                                    android:layout_marginEnd="15dp"/>
+
+                        </RelativeLayout>
+
+                </androidx.appcompat.widget.Toolbar>
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/bar">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:id="@+id/top"
+                            android:padding="15dp">
+
+                                <de.hdodenhof.circleimageview.CircleImageView
+                                    android:layout_width="80dp"
+                                    android:layout_height="80dp"
+                                    android:id="@+id/image_profile"/>
+
+                                <LinearLayout
+                                    android:layout_width="200dp"
+                                    android:layout_height="80dp"
+                                    android:orientation="vertical"
+                                    android:paddingStart="20dp"
+                                    android:paddingEnd="5dp">
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:maxLines="1"
+                                            android:id="@+id/profile_user_name"
+                                            android:textStyle="bold"
+                                            android:textSize="18sp"
+                                            android:layout_marginTop="13dp"
+                                            android:textColor="@color/common_google_signin_btn_text_light"/>
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:maxLines="1"
+                                            android:id="@+id/score_user_name"
+                                            android:textStyle="bold"
+                                            android:textSize="18sp"
+                                            android:layout_marginTop="5dp"
+                                            android:textColor="@color/common_google_signin_btn_text_light"/>
+
+                                </LinearLayout>
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent">
+                                        <Button
+                                            android:layout_width="match_parent"
+                                            android:layout_height="match_parent"
+                                            android:id="@+id/logout"
+                                            android:text="logout"
+                                            android:textSize="10sp"/>
+                                </LinearLayout>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:padding="12dp"
+                            android:id="@+id/mid"
+                            android:orientation="horizontal">
+
+                                <Button
+                                    android:layout_width="200dp"
+                                    android:layout_height="50dp"
+                                    android:padding="5dp"
+                                    android:layout_marginTop="10dp"
+                                    android:layout_marginRight="5dp"
+                                    android:text="EDIT PROFILE"
+                                    android:id="@+id/edit_profile"/>
+
+                                <Button
+                                    android:layout_width="200dp"
+                                    android:layout_height="50dp"
+                                    android:padding="5dp"
+                                    android:layout_marginTop="10dp"
+                                    android:text="Show Map"
+                                    android:id="@+id/show_map"/>
+
+                        </LinearLayout>
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/recycler_view"/>
+
+                </LinearLayout>
+
+        </RelativeLayout>
+
+</RelativeLayout>
