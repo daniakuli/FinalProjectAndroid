@@ -12,9 +12,9 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.example.finalprojectandroid.Fragments.HomePage;
+//import com.example.finalprojectandroid.Fragments.HomePage;
 import com.example.finalprojectandroid.Fragments.ProfilePage;
-import com.example.finalprojectandroid.Fragments.QnAPage;
+//import com.example.finalprojectandroid.Fragments.QnAPage;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -54,9 +54,9 @@ public class MainActivity extends AppCompatActivity {
                     Fragment fragment = null;
                     switch (item.getItemId()){
                         case R.id.question_item:
-                            fragment = new QnAPage();
+//                            fragment = new QnAPage();
                         case R.id.home_item:
-                            fragment = new HomePage();
+//                            fragment = new HomePage();
                             break;
                         case R.id.profile_item:
                             fragment = new ProfilePage();
