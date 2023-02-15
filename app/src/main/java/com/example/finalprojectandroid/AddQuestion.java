@@ -1,7 +1,9 @@
 package com.example.finalprojectandroid;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,44 +18,86 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import com.example.finalprojectandroid.Activites.Register;
+import com.example.finalprojectandroid.Models.Pictures;
+import com.example.finalprojectandroid.Models.User;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.widget.Toast;
 
 
 import java.io.IOException;
 import java.util.UUID;
 
-public class AddQuestion extends Fragment {
+public class AddQuestion extends AppCompatActivity {
     FirebaseStorage storage = FirebaseStorage.getInstance();
     StorageReference storageReference = storage.getReferenceFromUrl("gs://finalprojectandroind.appspot.com/");
+    private final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+    private final DatabaseReference databaseReference = firebaseDatabase.getReferenceFromUrl("https://finalprojectandroind-default-rtdb.firebaseio.com/");
     Boolean picChanged = false;
-    Uri filePath;
+    Uri fileUri;
     ImageView pProfileImage;
+    private static final String USERNAME = "username";
+
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.add_question, container, false);
-        pProfileImage         = view.findViewById(R.id.profilePicReg);
-        EditText correctOption          = view.findViewById(R.id.correctOption);
-        EditText option2                = view.findViewById(R.id.option2);
-        EditText option3                = view.findViewById(R.id.option3);
-        EditText option4                = view.findViewById(R.id.option4);
-        EditText country                = view.findViewById(R.id.country);
-        EditText city                   = view.findViewById(R.id.city);
-        FloatingActionButton addImage   = view.findViewById(R.id.addProfilePic);
-        Button uploadButton             = view.findViewById(R.id.insertButton);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.add_question);
+        pProfileImage         = findViewById(R.id.profilePicReg);
+        EditText country                = findViewById(R.id.country);
+        EditText city                   = findViewById(R.id.city);
+        FloatingActionButton addPic   = findViewById(R.id.addProfilePic);
+        Button uploadButton             = findViewById(R.id.insertButton);
 
-        return view;
+        SharedPreferences sharedPreferences = getSharedPreferences("app_pref", Context.MODE_PRIVATE);
+        String currUsername = sharedPreferences.getString(USERNAME,"");
+
+        addPic.setOnClickListener(view -> {
+            choosePic();
+        });
+
+        uploadButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(fileUri == null){
+                    fileUri = Uri.parse("android.resource://com.example.finalprojectandroid/" + R.drawable.user1);
+                }
+//                if(!password.equals(confPass)){
+//                    Toast.makeText(Register.this, "Password are not matching", Toast.LENGTH_LONG).show();
+//                }
+                else{
+                    String imgPath = "https://firebasestorage.googleapis.com/v0/b/finalprojectandroind.appspot.com/o/images%2F" + uploadImage() + "?alt=media";
+                    Log.d("Check", imgPath);
+                    String picID = databaseReference.child("places").push().getKey();
+                    Pictures question = new Pictures(currUsername, imgPath, country.getText().toString(), city.getText().toString());
+                    if (picID != null) {
+                        databaseReference.child("places").child(picID).setValue(question)
+                                .addOnSuccessListener(unused -> {
+                                    Toast.makeText(AddQuestion.this,
+                                            "Question registered successfully",
+                                            Toast.LENGTH_SHORT).show();
+                                    finish();
+                                })
+                                .addOnFailureListener(e -> Toast.makeText(AddQuestion.this,
+                                        "Question registered failed",
+                                        Toast.LENGTH_SHORT).show());
+                    }
+                }
+            }
+        });
     }
     private void choosePic() {
         Intent intent = new Intent();
@@ -69,13 +113,13 @@ public class AddQuestion extends Fragment {
                             result.getData() != null) {
                         picChanged = true;
                         Intent intent = result.getData();
-                        filePath = intent.getData();
+                        fileUri = intent.getData();
                         try{
                             Bitmap bitmap = MediaStore.
                                     Images.
                                     Media.
-                                    getBitmap(getActivity().getContentResolver(),
-                                            filePath);
+                                    getBitmap(getContentResolver(),
+                                            fileUri);
                             pProfileImage.setImageBitmap(bitmap);
                         }
                         catch (IOException err){
@@ -88,9 +132,9 @@ public class AddQuestion extends Fragment {
         String imgName = UUID.randomUUID().toString();
         StorageReference ref =
                 storageReference.child(
-                        "images/" + imgName);
+                        "places/" + imgName);
 
-        ref.putFile(filePath)
+        ref.putFile(fileUri)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -105,4 +149,8 @@ public class AddQuestion extends Fragment {
                 });
         return imgName;
     }
+    private String uploadQuestion(){
+        return "aaa";
+    }
+
     }

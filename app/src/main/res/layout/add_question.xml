@@ -6,20 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".Register">
 
-    <EditText
-        android:id="@+id/option3"
-        android:layout_width="215dp"
-        android:layout_height="41dp"
-        android:autofillHints="emailAddress"
-        android:hint="Option 3"
-        android:inputType="textEmailAddress"
-        android:minHeight="48dp"
-        android:paddingStart="20dp"
-        android:paddingEnd="0dp"
-        app:layout_constraintEnd_toEndOf="@+id/profilePicReg"
-        app:layout_constraintStart_toStartOf="@+id/regTxt"
-        app:layout_constraintTop_toBottomOf="@+id/option2" />
-
     <TextView
         android:id="@+id/regTxt"
         android:layout_width="wrap_content"
@@ -47,40 +33,9 @@
         app:layout_constraintVertical_bias="0.0" />
 
     <EditText
-        android:id="@+id/correctOption"
-        android:layout_width="215dp"
-        android:layout_height="41dp"
-        android:layout_marginTop="20dp"
-        android:autofillHints="emailAddress"
-        android:hint="Correct Option"
-        android:inputType="textEmailAddress"
-        android:minHeight="48dp"
-        android:paddingStart="20dp"
-        android:paddingEnd="0dp"
-        app:layout_constraintEnd_toEndOf="@+id/profilePicReg"
-        app:layout_constraintStart_toStartOf="@+id/regTxt"
-        app:layout_constraintTop_toBottomOf="@+id/regTxt" />
-
-    <EditText
-        android:id="@+id/option2"
-        android:layout_width="215dp"
-        android:layout_height="41dp"
-        android:layout_marginTop="5dp"
-        android:autofillHints="emailAddress"
-        android:hint="Option 2"
-        android:inputType="textEmailAddress"
-        android:minHeight="48dp"
-        android:paddingStart="20dp"
-        android:paddingEnd="0dp"
-        app:layout_constraintEnd_toEndOf="@+id/profilePicReg"
-        app:layout_constraintStart_toStartOf="@+id/regTxt"
-        app:layout_constraintTop_toBottomOf="@+id/correctOption" />
-
-    <EditText
         android:id="@+id/country"
         android:layout_width="215dp"
         android:layout_height="41dp"
-        android:layout_marginTop="9dp"
         android:autofillHints="emailAddress"
         android:hint="Country"
         android:inputType="textEmailAddress"
@@ -89,7 +44,7 @@
         android:paddingEnd="0dp"
         app:layout_constraintEnd_toEndOf="@+id/profilePicReg"
         app:layout_constraintStart_toStartOf="@+id/regTxt"
-        app:layout_constraintTop_toBottomOf="@+id/option4" />
+        app:layout_constraintTop_toBottomOf="@+id/regTxt" />
 
     <EditText
         android:id="@+id/city"
@@ -105,20 +60,6 @@
         app:layout_constraintEnd_toEndOf="@+id/profilePicReg"
         app:layout_constraintStart_toStartOf="@+id/regTxt"
         app:layout_constraintTop_toBottomOf="@+id/country" />
-
-    <EditText
-        android:id="@+id/option4"
-        android:layout_width="215dp"
-        android:layout_height="41dp"
-        android:autofillHints="emailAddress"
-        android:hint="Option 4"
-        android:inputType="textEmailAddress"
-        android:minHeight="48dp"
-        android:paddingStart="20dp"
-        android:paddingEnd="0dp"
-        app:layout_constraintEnd_toEndOf="@+id/profilePicReg"
-        app:layout_constraintStart_toStartOf="@+id/regTxt"
-        app:layout_constraintTop_toBottomOf="@+id/option3" />
 
     <ImageView
         android:id="@+id/profilePicReg"
