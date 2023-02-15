@@ -66,6 +66,12 @@
             android:layout_marginTop="16dp"
             android:layout_gravity="center_horizontal"/>
 
+        <TextView
+            android:id="@+id/description"
+            android:layout_width="match_parent"
+            android:layout_height="265dp"
+            android:text="Description" />
+
     </LinearLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton

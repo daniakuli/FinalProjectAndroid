@@ -1,4 +1,6 @@
-package com.example.finalprojectandroid;
+package com.example.finalprojectandroid.Interfaces;
+
+import com.example.finalprojectandroid.Models.Pictures;
 
 import java.util.List;
 
