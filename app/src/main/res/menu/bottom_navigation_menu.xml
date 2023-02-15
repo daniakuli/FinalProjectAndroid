@@ -1,8 +1,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/question_item"
+        android:id="@+id/add_question"
         android:icon="@drawable/question"
-        android:title="Questions" />
+        android:title="Add question" />
+    <item
+        android:id="@+id/view_question"
+        android:icon="@drawable/user1"
+        android:title="Displayed Question"/>
     <item
         android:id="@+id/home_item"
         android:icon="@drawable/home"

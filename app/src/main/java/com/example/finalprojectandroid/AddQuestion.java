@@ -41,7 +41,7 @@ import android.widget.Toast;
 import java.io.IOException;
 import java.util.UUID;
 
-public class AddQuestion extends AppCompatActivity {
+public class AddQuestion extends Fragment {
     FirebaseStorage storage = FirebaseStorage.getInstance();
     StorageReference storageReference = storage.getReferenceFromUrl("gs://finalprojectandroind.appspot.com/");
     private final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
@@ -53,19 +53,21 @@ public class AddQuestion extends AppCompatActivity {
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.add_question);
-        pProfileImage         = findViewById(R.id.profilePicReg);
-        EditText country                = findViewById(R.id.country);
-        EditText city                   = findViewById(R.id.city);
-        FloatingActionButton addPic   = findViewById(R.id.addProfilePic);
-        Button uploadButton             = findViewById(R.id.insertButton);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.add_question, container, false);
 
-        SharedPreferences sharedPreferences = getSharedPreferences("app_pref", Context.MODE_PRIVATE);
+
+        pProfileImage         = view.findViewById(R.id.profilePicReg);
+        EditText country                = view.findViewById(R.id.country);
+        EditText city                   = view.findViewById(R.id.city);
+        FloatingActionButton addPic   = view.findViewById(R.id.addProfilePic);
+        Button uploadButton             = view.findViewById(R.id.insertButton);
+
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("app_pref", Context.MODE_PRIVATE);
         String currUsername = sharedPreferences.getString(USERNAME,"");
 
-        addPic.setOnClickListener(view -> {
+        addPic.setOnClickListener(view1 -> {
             choosePic();
         });
 
@@ -79,25 +81,26 @@ public class AddQuestion extends AppCompatActivity {
 //                    Toast.makeText(Register.this, "Password are not matching", Toast.LENGTH_LONG).show();
 //                }
                 else{
-                    String imgPath = "https://firebasestorage.googleapis.com/v0/b/finalprojectandroind.appspot.com/o/images%2F" + uploadImage() + "?alt=media";
+                    String imgPath = "https://firebasestorage.googleapis.com/v0/b/finalprojectandroind.appspot.com/o/places%2F" + uploadImage() + "?alt=media";
                     Log.d("Check", imgPath);
                     String picID = databaseReference.child("places").push().getKey();
                     Pictures question = new Pictures(currUsername, imgPath, country.getText().toString(), city.getText().toString());
                     if (picID != null) {
                         databaseReference.child("places").child(picID).setValue(question)
                                 .addOnSuccessListener(unused -> {
-                                    Toast.makeText(AddQuestion.this,
+                                    Toast.makeText(requireActivity(),
                                             "Question registered successfully",
                                             Toast.LENGTH_SHORT).show();
-                                    finish();
+                                    requireActivity().finish();
                                 })
-                                .addOnFailureListener(e -> Toast.makeText(AddQuestion.this,
+                                .addOnFailureListener(e -> Toast.makeText(requireActivity(),
                                         "Question registered failed",
                                         Toast.LENGTH_SHORT).show());
                     }
                 }
             }
         });
+        return view;
     }
     private void choosePic() {
         Intent intent = new Intent();
@@ -118,7 +121,7 @@ public class AddQuestion extends AppCompatActivity {
                             Bitmap bitmap = MediaStore.
                                     Images.
                                     Media.
-                                    getBitmap(getContentResolver(),
+                                    getBitmap(requireActivity().getContentResolver(),
                                             fileUri);
                             pProfileImage.setImageBitmap(bitmap);
                         }

@@ -10,9 +10,11 @@ import android.os.Bundle;
 
 import android.widget.Toast;
 
+import com.example.finalprojectandroid.AddQuestion;
 import com.example.finalprojectandroid.Fragments.HomePage;
 import com.example.finalprojectandroid.Fragments.ProfilePage;
 import com.example.finalprojectandroid.Fragments.QnAPage;
+import com.example.finalprojectandroid.Fragments.ViewQuestion;
 import com.example.finalprojectandroid.R;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.database.DatabaseReference;
@@ -55,8 +57,11 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.profile_item:
                         fragment = new ProfilePage();
                         break;
-                    case R.id.question_item:
-                        fragment = new QnAPage();
+                    case R.id.add_question:
+                        fragment = new AddQuestion();
+                        break;
+                    case R.id.view_question:
+                        fragment = new ViewQuestion();
                 }
                 if(fragment != null)
                         loadFragment(fragment);

@@ -112,7 +112,7 @@ public class EditProfile extends Fragment {
 
         saveBtn.setOnClickListener(item -> {
             if(picChanged){
-                imgPath = "https://firebasestorage.googleapis.com/v0/b/finalprojectandroind.appspot.com/o/images%2F" + uploadImage() + "?alt=media";
+                imgPath = "https://firebasestorage.googleapis.com/v0/b/finalprojectandroind.appspot.com/o/places%2F" + uploadImage() + "?alt=media";
                 Toast.makeText(getActivity(),
                         "Profile picture Changed",
                               Toast.LENGTH_LONG).show();
