@@ -23,6 +23,8 @@ import com.example.finalprojectandroid.Activites.Login;
 import com.example.finalprojectandroid.Models.Pictures;
 import com.example.finalprojectandroid.R;
 import com.example.finalprojectandroid.Models.User;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -37,6 +39,7 @@ import java.util.List;
 public class ProfilePage extends Fragment{
 
     private static final String USERNAME = "username";
+    private static final String EMAIL = "email";
     private static final String SCORE = "0";
     private RecyclerView recyclerView;
     private ImageView imageView;
@@ -59,28 +62,41 @@ public class ProfilePage extends Fragment{
         Button mapBtn = view.findViewById(R.id.show_map);
 
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        DatabaseReference users = firebaseDatabase.getReferenceFromUrl("https://finalprojectandroind-default-rtdb.firebaseio.com/").child("users");
+        DatabaseReference databaseReference = firebaseDatabase.getReference();
 
-        users.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    User user = snapshot.getValue(User.class);
+        //DatabaseReference users = firebaseDatabase.getReferenceFromUrl("https://finalprojectandroind-default-rtdb.firebaseio.com/").child("users");
 
-                    if (user != null && user.getUsername()
-                            .equals(sharedPreferences
-                                    .getString(USERNAME, ""))) {
-                        Picasso.get().load(user.getImage()).into(imageView);
-                        break;
-                    }
-                }
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
+        databaseReference.child("users").child(sharedPreferences.getString(EMAIL, "")).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+               @Override
+               public void onComplete(@NonNull Task<DataSnapshot> task) {
+                   if (task.isSuccessful()) {
+                       User user = task.getResult().getValue(User.class);
+                       assert user != null;
+                       Picasso.get().load(user.getImage()).into(imageView);
+                   }
+               }
+           });
+//        users.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+//                    User user = snapshot.getValue(User.class);
+//
+//                    if (user != null && user.getUsername()
+//                            .equals(sharedPreferences
+//                                    .getString(USERNAME, ""))) {
+//                        Picasso.get().load(user.getImage()).into(imageView);
+//                        break;
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        });
 
         pUserName.setText(sharedPreferences.getString(USERNAME,""));
         pScore.setText(sharedPreferences.getString(SCORE,""));

@@ -4,6 +4,7 @@ import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
@@ -20,7 +21,12 @@ import android.widget.Toast;
 
 import com.example.finalprojectandroid.R;
 import com.example.finalprojectandroid.Models.User;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -33,7 +39,9 @@ import java.util.UUID;
 public class Register extends AppCompatActivity {
 
     private final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-    private final DatabaseReference databaseReference = firebaseDatabase.getReferenceFromUrl("https://finalprojectandroind-default-rtdb.firebaseio.com/");
+    private final DatabaseReference databaseReference = firebaseDatabase.getReference();
+            //getReferenceFromUrl("https://finalprojectandroind-default-rtdb.firebaseio.com/");
+    private FirebaseAuth mAuth;
     private StorageReference storageReference;
     private Uri fileUri;
     private ImageView picImageView;
@@ -42,6 +50,7 @@ public class Register extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mAuth = FirebaseAuth.getInstance();
         setContentView(R.layout.activity_register);
 
                        picImageView  = findViewById(R.id.profilePicReg);
@@ -82,28 +91,32 @@ public class Register extends AppCompatActivity {
             final String username = usernameET.getText().toString();
             final String password = passwordET.getText().toString();
             final String confPass = conPassET.getText().toString();
+
+            String checkEmail = "[a-zA-Z0-9._-]+@[a-z]+.+[a-z]+";
+            String checkUserName = "^(?=.*[a-zA-Z0-9]).{2,}$";
+            String checkPassword = "^(?=.*[a-zA-Z0-9])" +      //any letter or number
+                    "(?=\\S+$)" +       //no white spaces
+                    ".{6,}" +         //at least 6 characters
+                    "$";
+
             if(fileUri == null){
                 fileUri = Uri.parse("android.resource://com.example.finalprojectandroid/" + images[numb]);
             }
             if(!password.equals(confPass)){
                 Toast.makeText(Register.this, "Password are not matching", Toast.LENGTH_LONG).show();
             }
+            else if(!email.matches(checkEmail)) {
+                Toast.makeText(Register.this,"Invalid Email!", Toast.LENGTH_SHORT).show();
+            }
+            else if(!username.matches(checkUserName)) {
+                Toast.makeText(Register.this,"Username should contain at least 2 characters!", Toast.LENGTH_SHORT).show();
+            }
+            else if (!password.matches(checkPassword)) {
+                Toast.makeText(Register.this,"Password should contain 6 characters!", Toast.LENGTH_SHORT).show();
+            }
             else{
                 String imgPath = "https://firebasestorage.googleapis.com/v0/b/finalprojectandroind.appspot.com/o/images%2F" + uploadImage() + "?alt=media";
-                String userID = databaseReference.child("users").push().getKey();
-                User user = new User(username, email, password, imgPath, 0);
-                if (userID != null) {
-                    databaseReference.child("users").child(userID).setValue(user)
-                            .addOnSuccessListener(unused -> {
-                                Toast.makeText(Register.this,
-                                        "User registered successfully",
-                                        Toast.LENGTH_SHORT).show();
-                                finish();
-                            })
-                            .addOnFailureListener(e -> Toast.makeText(Register.this,
-                                    "User registered successfully",
-                                    Toast.LENGTH_SHORT).show());
-                }
+                registerToFireBaseAuth(email, password, username, imgPath);
             }
         });
 
@@ -157,4 +170,25 @@ public class Register extends AppCompatActivity {
                     }
                 }
             });
+
+    private void registerToFireBaseAuth(String email, String password, String username, String imgPath) {
+        mAuth.createUserWithEmailAndPassword(email, password)
+            .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                    if (task.isSuccessful()) {
+                        User user = new User(username, email, imgPath, 0);
+                        databaseReference.child("users").child(email.substring(0, email.indexOf('.'))).setValue(user)
+                            .addOnSuccessListener(unused -> {
+                                Toast.makeText(Register.this, "User registered successfully", Toast.LENGTH_SHORT).show();
+                                finish();
+                            })
+                            .addOnFailureListener(e -> Toast.makeText(Register.this, "Registration failed", Toast.LENGTH_SHORT).show());
+                    } else {
+                        Toast.makeText(Register.this, "Registration failed", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+    }
+
 }
