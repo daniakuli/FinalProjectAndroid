@@ -101,7 +101,7 @@ public class Register extends AppCompatActivity {
                                 finish();
                             })
                             .addOnFailureListener(e -> Toast.makeText(Register.this,
-                                    "User registered successfully",
+                                    "User registered failed",
                                     Toast.LENGTH_SHORT).show());
                 }
             }
