@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -51,6 +52,8 @@ public class ViewQuestion extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.view_question, container, false);
+        ProgressBar spinner = view.findViewById(R.id.progressBar1);
+        spinner.setVisibility(View.VISIBLE);
 
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         DatabaseReference databaseReference = firebaseDatabase.getReferenceFromUrl("https://finalprojectandroind-default-rtdb.firebaseio.com/");
@@ -67,8 +70,8 @@ public class ViewQuestion extends Fragment {
         String otherUser = "";
         String otherImageUrl = "";
         if (args != null) {
-             otherUser = args.getString("username");
-             otherImageUrl = args.getString("imgUrl");
+            otherUser = args.getString("username");
+            otherImageUrl = args.getString("imgUrl");
         }
 
         String finalOtherUser = otherUser;
@@ -77,30 +80,32 @@ public class ViewQuestion extends Fragment {
         saveButton.setOnClickListener(item -> {
             sharedPreferences = requireActivity().getSharedPreferences("app_pref", Context.MODE_PRIVATE);
             String score = sharedPreferences.getString(SCORE,"");
-                if(radioButton1.isChecked()) {
-                    Integer intScore = Integer.parseInt(score);
-                    intScore += 10;
-                    sharedPreferences.edit().putString(SCORE, intScore.toString()).apply();
+            if(radioButton1.isChecked()) {
+                Integer intScore = Integer.parseInt(score);
+                intScore += 10;
+                sharedPreferences.edit().putString(SCORE, intScore.toString()).apply();
 
-                    Integer finalIntScore = intScore;
-                    databaseReference.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                                User user = snapshot.getValue(User.class);
-                                if(user.getUsername().equals(sharedPreferences.getString(USERNAME,""))) {
-                                    databaseReference.child("users").child(snapshot.getKey()).child("score").setValue(finalIntScore);
-                                }
+                Integer finalIntScore = intScore;
+                databaseReference.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            User user = snapshot.getValue(User.class);
+                            if(user.getUsername().equals(sharedPreferences.getString(USERNAME,""))) {
+                                databaseReference.child("users").child(snapshot.getKey()).child("score").setValue(finalIntScore);
                             }
                         }
+                    }
 
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
 
-                        }
-                    });
-                }
+                    }
+                });
+            }
             getParentFragmentManager().popBackStack();
+
+
         });
 
 
@@ -110,12 +115,13 @@ public class ViewQuestion extends Fragment {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Pictures pictures = snapshot.getValue(Pictures.class);
 //                    if(pictures.getUsername().equals(finalOtherUser) && pictures.getImage().equals(finalOtherImageUrl)) {
-                        Picasso.get().load(pictures.getImage()).resize(450, 0).into(imageView);
-                        questionText.setText("Where is the picture taken?");
-                        radioButton1.setText(pictures.getCountry() + ", " + pictures.getCity());
-                        radioButton2.setText("Russia, Moscow");
-                        radioButton3.setText("Finland, Helsinki");
-                        radioButton4.setText("Germany, Berlin");
+                    Picasso.get().load(pictures.getImage()).resize(450, 0).into(imageView);
+                    spinner.setVisibility(View.GONE);
+                    questionText.setText("Where is the picture taken?");
+                    radioButton1.setText(pictures.getCountry() + ", " + pictures.getCity());
+                    radioButton2.setText("Russia, Moscow");
+                    radioButton3.setText("Finland, Helsinki");
+                    radioButton4.setText("Germany, Berlin");
 //                    }
                 }
             }
@@ -129,4 +135,3 @@ public class ViewQuestion extends Fragment {
         return view;
     }
 }
-
