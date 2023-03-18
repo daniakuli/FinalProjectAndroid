@@ -1,29 +1,22 @@
 package com.example.finalprojectandroid.Activites;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
+import androidx.navigation.ui.NavigationUI;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
-import android.widget.Toast;
-
-import com.example.finalprojectandroid.AddQuestion;
-import com.example.finalprojectandroid.Fragments.HomePage;
-import com.example.finalprojectandroid.Fragments.ProfilePage;
-import com.example.finalprojectandroid.Fragments.QnAPage;
-import com.example.finalprojectandroid.Fragments.ViewQuestion;
 import com.example.finalprojectandroid.R;
-import com.google.android.material.navigation.NavigationBarView;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
     private static final String LOGGED_IN = "logged_in";
     private static final String USERNAME = "username";
-
+    private NavController navController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,41 +32,35 @@ public class MainActivity extends AppCompatActivity {
         }
         else
         {
-            String username = sharedPreferences.getString(USERNAME, "");
             setContentView(R.layout.activity_main);
 
-            NavigationBarView bottomNavigationView = findViewById(R.id.bottom_navigation);
+            NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_activity_main);
+            navController = navHostFragment.getNavController();
 
+            BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
             bottomNavigationView.setSelectedItemId(R.id.home_item);
 
-            loadFragment(new HomePage());
+            NavigationUI.setupWithNavController(bottomNavigationView, navController);
+
 
             bottomNavigationView.setOnItemSelectedListener(item -> {
-                Fragment fragment = null;
                 switch (item.getItemId()){
                     case R.id.home_item:
-                        fragment = new HomePage();
+                        navController.navigate(R.id.homePage);
                         break;
                     case R.id.profile_item:
-                        fragment = new ProfilePage();
+                        navController.navigate(R.id.profilePage);
                         break;
-                    case R.id.add_question:
-                        fragment = new AddQuestion();
+                    case R.id.add_question_item:
+                        navController.navigate(R.id.addQuestionPage);
                         break;
-                    case R.id.view_question:
-                        fragment = new ViewQuestion();
+                    case R.id.view_question_item:
+                        navController.navigate(R.id.viewQuestionPage);
+                        break;
                 }
-                if(fragment != null)
-                        loadFragment(fragment);
                 return true;
             });
 
         }
-    }
-    void loadFragment(Fragment fragment){
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.fragment_container,fragment)
-                .commit();
     }
 }

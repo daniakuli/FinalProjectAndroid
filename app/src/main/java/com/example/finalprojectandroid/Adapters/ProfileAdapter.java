@@ -10,18 +10,20 @@ import com.example.finalprojectandroid.Interfaces.OnItemClickListener;
 import com.example.finalprojectandroid.Models.Pictures;
 import com.example.finalprojectandroid.R;
 import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHolder> {
-    private final List<Pictures> picturesList;
+    private List<Pictures> picturesList;
 
     public static OnItemClickListener listener;
     public void setOnItemClickListener(OnItemClickListener listener){
         ProfileAdapter.listener = listener;
     }
 
-    public ProfileAdapter(List<Pictures> pictures) {
-        picturesList = pictures;
+    public ProfileAdapter() {
+        picturesList = new ArrayList<>();
     }
 
     @NonNull
@@ -43,9 +45,11 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
         return picturesList.size();
     }
 
-    public void addData(Pictures pic, int pos) {
-        picturesList.set(pos, pic);
-        notifyItemChanged(pos,pic);
+    public void addData(List<Pictures> picturesList) {
+        this.picturesList = picturesList;
+        notifyDataSetChanged();
+        //picturesList.set(pos, pic);
+        //notifyItemChanged(pos,pic);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

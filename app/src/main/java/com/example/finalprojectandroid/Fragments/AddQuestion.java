@@ -1,4 +1,4 @@
-package com.example.finalprojectandroid;
+package com.example.finalprojectandroid.Fragments;
 
 import android.app.Activity;
 import android.content.Context;
@@ -9,8 +9,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 
 import androidx.activity.result.ActivityResult;
@@ -18,15 +16,13 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
-import com.example.finalprojectandroid.Activites.Register;
 import com.example.finalprojectandroid.Models.Pictures;
-import com.example.finalprojectandroid.Models.User;
+import com.example.finalprojectandroid.R;
+import com.example.finalprojectandroid.databinding.AddQuestionBinding;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -50,28 +46,23 @@ public class AddQuestion extends Fragment {
     Uri fileUri;
     ImageView pProfileImage;
     private static final String USERNAME = "username";
+    private AddQuestionBinding binding;
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.add_question, container, false);
-
-
-        pProfileImage         = view.findViewById(R.id.profilePicReg);
-        EditText country                = view.findViewById(R.id.country);
-        EditText city                   = view.findViewById(R.id.city);
-        FloatingActionButton addPic   = view.findViewById(R.id.addProfilePic);
-        Button uploadButton             = view.findViewById(R.id.insertButton);
+        binding = AddQuestionBinding.inflate(inflater, container, false);
+        View view = binding.getRoot();
 
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("app_pref", Context.MODE_PRIVATE);
         String currUsername = sharedPreferences.getString(USERNAME,"");
 
-        addPic.setOnClickListener(view1 -> {
+        binding.addProfilePic.setOnClickListener(view1 -> {
             choosePic();
         });
 
-        uploadButton.setOnClickListener(new View.OnClickListener() {
+        binding.insertButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(fileUri == null){
@@ -84,7 +75,7 @@ public class AddQuestion extends Fragment {
                     String imgPath = "https://firebasestorage.googleapis.com/v0/b/finalprojectandroind.appspot.com/o/places%2F" + uploadImage() + "?alt=media";
                     Log.d("Check", imgPath);
                     String picID = databaseReference.child("places").push().getKey();
-                    Pictures question = new Pictures(currUsername, imgPath, country.getText().toString(), city.getText().toString());
+                    Pictures question = new Pictures(currUsername, imgPath, binding.country.getText().toString(), binding.city.getText().toString());
                     if (picID != null) {
                         databaseReference.child("places").child(picID).setValue(question)
                                 .addOnSuccessListener(unused -> {
