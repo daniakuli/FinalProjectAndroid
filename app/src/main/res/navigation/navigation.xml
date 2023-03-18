@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation"
+    app:startDestination="@id/homePage">
+
+    <fragment
+        android:id="@+id/profilePage"
+        android:name="com.example.finalprojectandroid.Fragments.ProfilePage"
+        android:label="fragment_profile_page"
+        tools:layout="@layout/fragment_profile_page">
+        <action
+            android:id="@+id/action_profilePage_to_imageDialogFragment"
+            app:destination="@id/imageDialogFragment" />
+        <action
+            android:id="@+id/action_profilePage_to_editPage"
+            app:destination="@id/editPage"
+            app:launchSingleTop="true"/>
+        <action
+            android:id="@+id/action_profilePage_to_mapPage"
+            app:destination="@id/mapPage" />
+    </fragment>
+    <fragment
+        android:id="@+id/homePage"
+        android:name="com.example.finalprojectandroid.Fragments.HomePage"
+        android:label="HomePage"
+        tools:layout="@layout/fragment_home">
+        <!--<action
+            android:id="@+id/action_homePage_to_profilePage"
+            app:destination="@id/profilePage" />-->
+        <action
+            android:id="@+id/action_homePage_to_viewQuestion"
+            app:destination="@id/viewQuestionPage" />
+        <!--<action
+            android:id="@+id/action_homePage_to_addQuestion"
+            app:destination="@id/addQuestionPage" />-->
+    </fragment>
+    <fragment
+        android:id="@+id/addQuestionPage"
+        android:name="com.example.finalprojectandroid.Fragments.AddQuestion"
+        android:label="add_question"
+        tools:layout="@layout/add_question" />
+    <fragment
+        android:id="@+id/viewQuestionPage"
+        android:name="com.example.finalprojectandroid.Fragments.ViewQuestion"
+        android:label="ViewQuestion"
+        tools:layout="@layout/view_question">
+        <argument
+            android:name="username"
+            app:argType="string" />
+        <argument
+            android:name="imgUrl"
+            app:argType="string"/>
+    </fragment>
+    <fragment
+        android:id="@+id/imageDialogFragment"
+        android:name="com.example.finalprojectandroid.Fragments.ImageDialogFragment"
+        android:label="ImageDialogFragment" >
+        <action
+            android:id="@+id/action_imageDialogFragment_to_profilePage"
+            app:popUpTo="@id/profilePage" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/mapPage"
+        android:name="com.example.finalprojectandroid.Fragments.MapFragment"
+        android:label="MapFragment">
+        <action
+            android:id="@+id/action_mapPage_to_profilePage"
+            app:popUpTo="@id/profilePage" />
+        <argument
+            android:name="pictures"
+            app:argType="com.example.finalprojectandroid.Models.Pictures[]" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/editPage"
+        android:name="com.example.finalprojectandroid.Fragments.EditProfile"
+        android:label="EditFragment">
+        <action
+            android:id="@+id/action_editPage_to_profilePage"
+            app:destination="@+id/profilePage"
+            app:popUpTo="@id/profilePage"
+            app:popUpToInclusive="false"/>
+    </fragment>
+</navigation>
