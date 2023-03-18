@@ -9,8 +9,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.finalprojectandroid.OnItemClickListener;
-import com.example.finalprojectandroid.Pictures;
+import com.example.finalprojectandroid.Interfaces.OnItemClickListener;
+import com.example.finalprojectandroid.Models.Pictures;
 import com.example.finalprojectandroid.R;
 
 import java.util.List;
