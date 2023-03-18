@@ -30,6 +30,7 @@ import android.widget.Toast;
 
 import com.example.finalprojectandroid.Models.Pictures;
 import com.example.finalprojectandroid.R;
+import com.example.finalprojectandroid.databinding.FragmentImageDialogBinding;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -47,18 +48,14 @@ import java.util.UUID;
 public class ImageDialogFragment extends DialogFragment {
     private static final String USERNAME = "username";
     private SharedPreferences sharedPreferences;
-    private ImageView imageView;
-    private TextView description;
-    private EditText country;
-    private EditText city;
-    private FloatingActionButton changePicture;
-    private Button editButton, saveButton;
+
     private String imageUrl;
     private int pos;
     private ProfilePage profilePage;
     private Boolean picChanged = false;
     private Uri fileUri;
     private StorageReference storageReference;
+    private FragmentImageDialogBinding binding;
 
 
     public ImageDialogFragment newInstance(String imageUrl, String country, String city) {
@@ -73,61 +70,56 @@ public class ImageDialogFragment extends DialogFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_image_dialog, container, false);
-        imageView = view.findViewById(R.id.image_view);
-        description = view.findViewById(R.id.description);
-        country = view.findViewById(R.id.text_view_1);
-        city = view.findViewById(R.id.text_view_2);
-        editButton = view.findViewById(R.id.btn_edit);
-        saveButton = view.findViewById(R.id.btn_save);
+
+        binding = FragmentImageDialogBinding.inflate(inflater, container, false);
+        View view = binding.getRoot();
+
         sharedPreferences = requireActivity().getSharedPreferences("app_pref", Context.MODE_PRIVATE);
 
         FirebaseStorage storage = FirebaseStorage.getInstance();
         storageReference = storage.getReferenceFromUrl("gs://finalprojectandroind.appspot.com/");
 
-        changePicture = view.findViewById(R.id.floatingActionButton);
-
-        description.setText(getDescription());
-        country.setEnabled(false);
-        city.setEnabled(false);
-        changePicture.hide();
+        binding.description.setText(getDescription());
+        binding.countryET.setEnabled(false);
+        binding.cityET.setEnabled(false);
+        binding.changePicture.hide();
 
         imageUrl = requireArguments().getString("imageUrl");
         String country = requireArguments().getString("country");
         String city = requireArguments().getString("city");
         pos = requireArguments().getInt("pos");
 
-        Picasso.get().load(imageUrl).into(imageView);
+        Picasso.get().load(imageUrl).into(binding.imageView);
 
-        this.country.setText(country);
-        this.city.setText(city);
+        this.binding.countryET.setText(country);
+        this.binding.cityET.setText(city);
 
-        editButton.setOnClickListener(item -> {
-            this.country.setEnabled(true);
-            this.country.setPaintFlags(this.country.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-            this.city.setEnabled(true);
-            this.city.setPaintFlags(this.city.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-            saveButton.setVisibility(View.VISIBLE);
-            editButton.setVisibility(View.GONE);
-            changePicture.show();
+        binding.btnEdit.setOnClickListener(item -> {
+            this.binding.countryET.setEnabled(true);
+            this.binding.countryET.setPaintFlags(this.binding.countryET.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+            this.binding.cityET.setEnabled(true);
+            this.binding.cityET.setPaintFlags(this.binding.cityET.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+            binding.btnSave.setVisibility(View.VISIBLE);
+            binding.btnEdit.setVisibility(View.GONE);
+            binding.changePicture.show();
         });
 
-        changePicture.setOnClickListener(item -> choosePic());
+        binding.changePicture.setOnClickListener(item -> choosePic());
 
-        saveButton.setOnClickListener(item -> {
+        binding.btnSave.setOnClickListener(item -> {
             if(picChanged){
                 imageUrl = "https://firebasestorage.googleapis.com/v0/b/finalprojectandroind.appspot.com/o/images%2F" + uploadImage() + "?alt=media";
                 Toast.makeText(getActivity(),
-                        "Profile picure Changed",
+                        "Profile picture Changed",
                         Toast.LENGTH_LONG).show();
             }
             String name = sharedPreferences.getString(USERNAME,"");
             Pictures pic = new Pictures(name,imageUrl,
-                                        this.country.getText().toString(),
-                                        this.city.getText().toString());
+                                        this.binding.countryET.getText().toString(),
+                                        this.binding.cityET.getText().toString());
             changeData(pic,pos);
 
-            getProfilePage().updateData(pic,pos);
+            getProfilePage().updateData();
 
             dismiss();
         });
@@ -194,7 +186,7 @@ public class ImageDialogFragment extends DialogFragment {
                                     Media.
                                     getBitmap(requireActivity().getContentResolver(),
                                             fileUri);
-                            imageView.setImageBitmap(bitmap);
+                            binding.imageView.setImageBitmap(bitmap);
                         }
                         catch (IOException err){
                             err.printStackTrace();

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Fragments.AddQuestion">
+
+    <TextView
+        android:id="@+id/regTxt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="136dp"
+        android:fontFamily="sans-serif-condensed"
+        android:gravity="center"
+        android:text="Add a Question"
+        android:textColor="#CC000000"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@id/profilePicReg"
+        app:layout_constraintTop_toTopOf="@+id/addProfilePic" />
+
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/insertButton"
+        android:layout_width="215dp"
+        android:layout_height="41dp"
+        android:layout_marginTop="31dp"
+        android:text="post question"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/city"
+        app:layout_constraintTop_toBottomOf="@+id/city"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <EditText
+        android:id="@+id/country"
+        android:layout_width="215dp"
+        android:layout_height="41dp"
+        android:autofillHints="emailAddress"
+        android:hint="Country"
+        android:inputType="textEmailAddress"
+        android:minHeight="48dp"
+        android:paddingStart="20dp"
+        android:paddingEnd="0dp"
+        app:layout_constraintEnd_toEndOf="@+id/profilePicReg"
+        app:layout_constraintStart_toStartOf="@+id/regTxt"
+        app:layout_constraintTop_toBottomOf="@+id/regTxt" />
+
+    <EditText
+        android:id="@+id/city"
+        android:layout_width="215dp"
+        android:layout_height="41dp"
+        android:layout_marginTop="8dp"
+        android:autofillHints="emailAddress"
+        android:hint="City"
+        android:inputType="textEmailAddress"
+        android:minHeight="48dp"
+        android:paddingStart="20dp"
+        android:paddingEnd="0dp"
+        app:layout_constraintEnd_toEndOf="@+id/profilePicReg"
+        app:layout_constraintStart_toStartOf="@+id/regTxt"
+        app:layout_constraintTop_toBottomOf="@+id/country" />
+
+    <ImageView
+        android:id="@+id/profilePicReg"
+        android:layout_width="119dp"
+        android:layout_height="112dp"
+        android:layout_marginTop="60dp"
+        android:contentDescription="profilePic"
+        android:scaleType="fitCenter"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/addProfilePic"
+        android:layout_width="54dp"
+        android:layout_height="54dp"
+        android:layout_marginStart="208dp"
+        android:layout_marginTop="80dp"
+        android:contentDescription="add"
+        app:layout_constraintRight_toRightOf="@id/profilePicReg"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/profilePicReg"
+        app:srcCompat="@android:drawable/ic_menu_add" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

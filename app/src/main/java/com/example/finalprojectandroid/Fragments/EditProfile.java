@@ -14,6 +14,8 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 
 import android.provider.MediaStore;
@@ -21,18 +23,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.finalprojectandroid.Models.Pictures;
-import com.example.finalprojectandroid.R;
 import com.example.finalprojectandroid.Models.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.example.finalprojectandroid.databinding.FragmentEditProfileBinding;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -57,15 +55,16 @@ public class EditProfile extends Fragment {
     private String nameForUpdate;
     private String score;
     private Uri fileUri;
-    private ImageView imageView;
     private Boolean picChanged = false;
     private ProfilePage profilePage;
+    private FragmentEditProfileBinding binding;
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_edit_profile, container, false);
+        binding = FragmentEditProfileBinding.inflate(inflater, container, false);
+        View view = binding.getRoot();
 
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         DatabaseReference databaseReference = firebaseDatabase.getReference();
@@ -73,13 +72,6 @@ public class EditProfile extends Fragment {
 
         FirebaseStorage storage = FirebaseStorage.getInstance();
         storageReference = storage.getReferenceFromUrl("gs://finalprojectandroind.appspot.com/");
-
-        imageView = view.findViewById(R.id.editPic);
-        EditText emailET  = view.findViewById(R.id.edit_email);
-        EditText usernameET = view.findViewById(R.id.edit_username);
-        Button   backBtn  = view.findViewById(R.id.edit_backBtn);
-        Button   saveBtn  = view.findViewById(R.id.edit_save);
-        FloatingActionButton addPicBtn = view.findViewById(R.id.editProfilePicbtn);
 
 
         sharedPreferences = requireActivity().getSharedPreferences("app_pref", Context.MODE_PRIVATE);
@@ -125,17 +117,18 @@ public class EditProfile extends Fragment {
 //            }
 //        });
 
-        backBtn.setOnClickListener(item -> getParentFragmentManager().popBackStack());
+        binding.editBackBtn.setOnClickListener(item -> getParentFragmentManager().popBackStack());
 
-        saveBtn.setOnClickListener(item -> {
+        binding.editSave.setOnClickListener(item -> {
             if(picChanged){
-                imgPath = "https://firebasestorage.googleapis.com/v0/b/finalprojectandroind.appspot.com/o/images%2F" + uploadImage() + "?alt=media";
+                imgPath = "https://firebasestorage.googleapis.com/v0/b/finalprojectandroind.appspot.com/o/places%2F" + uploadImage() + "?alt=media";
                 Toast.makeText(getActivity(),
                         "Profile picture Changed",
                               Toast.LENGTH_LONG).show();
             }
-            User editUser = new User(usernameET.getText().toString(),
-                                    emailET.getText().toString(),
+
+            User editUser = new User(binding.editUsername.getText().toString(),
+                                    binding.editEmail.getText().toString(),
                                     imgPath,
                                     Integer.parseInt(score));
             databaseReference.child("users").child(sharedPreferences.getString(EMAIL, "")).setValue(editUser);
@@ -159,14 +152,16 @@ public class EditProfile extends Fragment {
 
                 }
             });
-            sharedPreferences.edit().putString(USERNAME,usernameET.
+            sharedPreferences.edit().putString(USERNAME,binding.editUsername.
                                                           getText().
                                                           toString()).apply();
             getProfilePage().updateRecycler();
-            getParentFragmentManager().popBackStack();
+            //NavController navController = Navigation.findNavController(requireView());
+            //navController.popBackStack();
+            Navigation.findNavController(view).popBackStack();
         });
 
-        addPicBtn.setOnClickListener(item -> choosePic());
+        binding.editProfilePicbtn.setOnClickListener(item -> choosePic());
 
         return view;
     }
@@ -202,7 +197,7 @@ public class EditProfile extends Fragment {
                                     Media.
                                     getBitmap(requireActivity().getContentResolver(),
                                             fileUri);
-                            imageView.setImageBitmap(bitmap);
+                            binding.editPic.setImageBitmap(bitmap);
                         }
                         catch (IOException err){
                             err.printStackTrace();

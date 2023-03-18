@@ -19,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.finalprojectandroid.Models.FirebaseStorageManager;
 import com.example.finalprojectandroid.R;
 import com.example.finalprojectandroid.Models.User;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -43,6 +44,7 @@ public class Register extends AppCompatActivity {
             //getReferenceFromUrl("https://finalprojectandroind-default-rtdb.firebaseio.com/");
     private FirebaseAuth mAuth;
     private StorageReference storageReference;
+    
     private Uri fileUri;
     private ImageView picImageView;
 
@@ -73,16 +75,11 @@ public class Register extends AppCompatActivity {
         picImageView.setImageResource(images[numb]);
 
 
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        storageReference = storage.getReferenceFromUrl("gs://finalprojectandroind.appspot.com/");
+        //FirebaseStorage storage = FirebaseStorage.getInstance();
+        //storageReference = storage.getReferenceFromUrl("gs://finalprojectandroind.appspot.com/");
+        storageReference = new FirebaseStorageManager();
 
         addPic.setOnClickListener(view -> {
-            /*UploadImages upImg = new UploadImages(Register.this);
-            Pair p = upImg.choosePic();
-            Log.d("checkPair","Bool: " +
-                                        p.picChanged +
-                                        " filePath: " +
-                                        p.filepath);*/
             choosePic();
         });
 
@@ -130,7 +127,7 @@ public class Register extends AppCompatActivity {
         mStartForResult.launch(intent);
     }
 
-    private String uploadImage(){
+    /*private String uploadImage(){
         String imgUID = UUID.randomUUID().toString();
         StorageReference ref =
                 storageReference.child(
@@ -146,7 +143,7 @@ public class Register extends AppCompatActivity {
                                 Toast.LENGTH_SHORT)
                         .show());
         return imgUID;
-    }
+    }*/
 
     ActivityResultLauncher<Intent> mStartForResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
