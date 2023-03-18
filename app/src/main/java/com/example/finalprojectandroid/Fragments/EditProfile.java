@@ -14,6 +14,8 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 
 import android.provider.MediaStore;
@@ -21,17 +23,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.example.finalprojectandroid.R;
-import com.example.finalprojectandroid.Register;
-import com.example.finalprojectandroid.User;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.example.finalprojectandroid.Models.Pictures;
+import com.example.finalprojectandroid.Models.User;
+import com.example.finalprojectandroid.databinding.FragmentEditProfileBinding;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -39,56 +35,55 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
+import java.util.Objects;
 import java.util.UUID;
 
 public class EditProfile extends Fragment {
-    private FirebaseDatabase firebaseDatabase;
     private SharedPreferences sharedPreferences;
-    private FirebaseStorage storage;
     private StorageReference storageReference;
     private static final String USERNAME = "username";
-    String uid = "";
-    String pass = "";
-    String imgPath = "";
-    Uri filePath;
-    ImageView imgEdit;
-    Boolean picChanged = false;
+    private static final String SCORE = "0";
+    private String uid = "";
+    private String pass = "";
+    private String imgPath = "";
+    private String nameForUpdate;
+    private String score;
+    private Uri fileUri;
+    private Boolean picChanged = false;
+    private ProfilePage profilePage;
+    private FragmentEditProfileBinding binding;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_edit_profile, container, false);
+        binding = FragmentEditProfileBinding.inflate(inflater, container, false);
+        View view = binding.getRoot();
 
-        firebaseDatabase = FirebaseDatabase.getInstance();
-        DatabaseReference databaseReference = firebaseDatabase.getReferenceFromUrl("https://finalprojectandroind-default-rtdb.firebaseio.com/").child("users");
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference databaseReference = firebaseDatabase.getReferenceFromUrl("https://finalprojectandroind-default-rtdb.firebaseio.com/");//.child("users");
 
-        storage = FirebaseStorage.getInstance();
+        FirebaseStorage storage = FirebaseStorage.getInstance();
         storageReference = storage.getReferenceFromUrl("gs://finalprojectandroind.appspot.com/");
 
-        imgEdit = view.findViewById(R.id.editPic);
-        EditText emailET  = view.findViewById(R.id.edit_email);
-        EditText usernameET = view.findViewById(R.id.edit_username);
-        Button   backBtn  = view.findViewById(R.id.edit_backBtn);
-        Button   saveBtn  = view.findViewById(R.id.edit_save);
-        FloatingActionButton addPic = view.findViewById(R.id.editProfilePicbtn);
 
+        sharedPreferences = requireActivity().getSharedPreferences("app_pref", Context.MODE_PRIVATE);
+        nameForUpdate = sharedPreferences.getString(USERNAME, "");
+        score = sharedPreferences.getString(SCORE,"");
 
-        sharedPreferences = getActivity().getSharedPreferences("app_pref", Context.MODE_PRIVATE);
-
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+        databaseReference.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot datasnapshot) {
                 for(DataSnapshot snapshot : datasnapshot.getChildren()){
                     User user = snapshot.getValue(User.class);
-                    if(user.getUsername().equals(sharedPreferences.getString(USERNAME, ""))){
-                        emailET.setEnabled(false);
-                        emailET.setText(user.getEmail());
-                        usernameET.setText(user.getUsername());
-                        Picasso.get().load(user.getImage()).into(imgEdit);
+                    if (user != null && user.getUsername().equals(sharedPreferences.getString(USERNAME, ""))) {
+                        binding.editEmail.setEnabled(false);
+                        binding.editEmail.setText(user.getEmail());
+                        binding.editUsername.setText(user.getUsername());
+                        Picasso.get().load(user.getImage()).into(binding.editPic);
                         uid = snapshot.getKey();
                         pass = user.getPassword();
                         imgPath = user.getImage();
@@ -104,43 +99,63 @@ public class EditProfile extends Fragment {
             }
         });
 
-        backBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getParentFragmentManager().popBackStack();
-            }
-        });
+        binding.editBackBtn.setOnClickListener(item -> getParentFragmentManager().popBackStack());
 
-        saveBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(picChanged){
-                    imgPath = "https://firebasestorage.googleapis.com/v0/b/finalprojectandroind.appspot.com/o/images%2F" + uploadImage() + "?alt=media";
-                    Toast.makeText(getActivity(),
-                            "Profile picure Changed",
-                                  Toast.LENGTH_LONG).show();
+        binding.editSave.setOnClickListener(item -> {
+            if(picChanged){
+                imgPath = "https://firebasestorage.googleapis.com/v0/b/finalprojectandroind.appspot.com/o/places%2F" + uploadImage() + "?alt=media";
+                Toast.makeText(getActivity(),
+                        "Profile picture Changed",
+                              Toast.LENGTH_LONG).show();
+            }
+            User editUser = new User(binding.editUsername.getText().toString(),
+                                    binding.editEmail.getText().toString(),
+                                    pass,
+                                    imgPath,
+                                    Integer.parseInt(score));
+            databaseReference.child("users").child(uid).setValue(editUser);
+            databaseReference.child("places").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot datasnapshot) {
+                    for(DataSnapshot snapshot : datasnapshot.getChildren()){
+                        Pictures pic = snapshot.getValue(Pictures.class);
+                        if (pic != null && pic.getUsername().equals(nameForUpdate)) {
+                            databaseReference
+                                    .child("places")
+                                    .child(Objects.requireNonNull(snapshot.getKey()))
+                                    .child("username")
+                                    .setValue(editUser.getUsername());
+                        }
+                    }
                 }
-                User editUser = new User(usernameET.getText().toString(),
-                                        emailET.getText().toString(),
-                                        pass,
-                                        imgPath);
-                databaseReference.child(uid).setValue(editUser);
-                sharedPreferences.edit().putString(USERNAME,usernameET.
-                                                              getText().
-                                                              toString()).commit();
-                getParentFragmentManager().popBackStack();
-            }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+            sharedPreferences.edit().putString(USERNAME,binding.editUsername.
+                                                          getText().
+                                                          toString()).apply();
+            getProfilePage().updateRecycler();
+            //NavController navController = Navigation.findNavController(requireView());
+            //navController.popBackStack();
+            Navigation.findNavController(view).popBackStack();
         });
 
-        addPic.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                choosePic();
-            }
-        });
+        binding.editProfilePicbtn.setOnClickListener(item -> choosePic());
 
         return view;
     }
+
+    public void setFragment(ProfilePage profile){
+        profilePage = profile;
+    }
+
+    public ProfilePage getProfilePage(){
+        return this.profilePage;
+    }
+
 
     private void choosePic() {
         Intent intent = new Intent();
@@ -157,14 +172,14 @@ public class EditProfile extends Fragment {
                             result.getData() != null) {
                         picChanged = true;
                         Intent intent = result.getData();
-                        filePath = intent.getData();
+                        fileUri = intent.getData();
                         try{
                             Bitmap bitmap = MediaStore.
                                     Images.
                                     Media.
-                                    getBitmap(getActivity().getContentResolver(),
-                                            filePath);
-                            imgEdit.setImageBitmap(bitmap);
+                                    getBitmap(requireActivity().getContentResolver(),
+                                            fileUri);
+                            binding.editPic.setImageBitmap(bitmap);
                         }
                         catch (IOException err){
                             err.printStackTrace();
@@ -174,24 +189,15 @@ public class EditProfile extends Fragment {
             });
 
     private String uploadImage(){
-        String imgName = UUID.randomUUID().toString();
+        String imgUID = UUID.randomUUID().toString();
         StorageReference ref =
                 storageReference.child(
-                        "images/" + imgName);
+                        "images/" + imgUID);
 
-        ref.putFile(filePath)
-                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                       Log.d("ok", "Working");
-                    }
+        ref.putFile(fileUri)
+                .addOnSuccessListener(taskSnapshot -> {
                 })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                       Log.e("not ok","Not working");
-                    }
-                });
-        return imgName;
+                .addOnFailureListener(e -> Log.e("not ok","Not working"));
+        return imgUID;
     }
 }

@@ -1,24 +1,29 @@
 package com.example.finalprojectandroid.Adapters;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
+import com.example.finalprojectandroid.Interfaces.OnItemClickListener;
+import com.example.finalprojectandroid.Models.Pictures;
 import com.example.finalprojectandroid.R;
+import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHolder> {
-    private List<Integer> mData;
+    private List<Pictures> picturesList;
 
-    public ProfileAdapter(List<Integer> data) {
-        mData = data;
+    public static OnItemClickListener listener;
+    public void setOnItemClickListener(OnItemClickListener listener){
+        ProfileAdapter.listener = listener;
+    }
+
+    public ProfileAdapter() {
+        picturesList = new ArrayList<>();
     }
 
     @NonNull
@@ -31,22 +36,38 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.mImageView.setImageResource(mData.get(position));
+        Pictures pictures = picturesList.get(position);
+        Picasso.get().load(pictures.getImage()).into(holder.imageView);
     }
 
     @Override
     public int getItemCount() {
-        return mData.size();
+        return picturesList.size();
+    }
+
+    public void addData(List<Pictures> picturesList) {
+        this.picturesList = picturesList;
+        notifyDataSetChanged();
+        //picturesList.set(pos, pic);
+        //notifyItemChanged(pos,pic);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        public ImageView mImageView;
+        public ImageView imageView;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            mImageView = itemView.findViewById(R.id.post_image);
+            imageView = itemView.findViewById(R.id.post_image);
 
+            itemView.setOnClickListener(item -> {
+                if(listener != null){
+                    int pos = getAdapterPosition();
+                    if(pos != RecyclerView.NO_POSITION){
+                        listener.onItemClick(pos);
+                    }
+                }
+            });
         }
     }
 }
