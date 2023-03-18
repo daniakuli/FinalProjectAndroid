@@ -3,7 +3,6 @@ package com.example.finalprojectandroid.Models;
 public class User {
     private String username;
     private String email;
-    private String password;
     private String image;
     private Integer score;
 
@@ -12,12 +11,10 @@ public class User {
 
     public User(String username,
                 String email,
-                String password,
                 String image,
                 Integer score) {
         this.username = username;
         this.email = email;
-        this.password = password;
         this.image = image;
         this.score = score;
     }
@@ -32,11 +29,6 @@ public class User {
 
     public String getEmail() {
         return email;
-    }
-
-
-    public String getPassword() {
-        return password;
     }
 
 

@@ -27,6 +27,9 @@ import android.widget.Toast;
 
 import com.example.finalprojectandroid.Models.Pictures;
 import com.example.finalprojectandroid.Models.User;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.example.finalprojectandroid.databinding.FragmentEditProfileBinding;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -45,9 +48,9 @@ public class EditProfile extends Fragment {
     private SharedPreferences sharedPreferences;
     private StorageReference storageReference;
     private static final String USERNAME = "username";
+    private static final String EMAIL = "email";
     private static final String SCORE = "0";
     private String uid = "";
-    private String pass = "";
     private String imgPath = "";
     private String nameForUpdate;
     private String score;
@@ -64,7 +67,8 @@ public class EditProfile extends Fragment {
         View view = binding.getRoot();
 
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        DatabaseReference databaseReference = firebaseDatabase.getReferenceFromUrl("https://finalprojectandroind-default-rtdb.firebaseio.com/");//.child("users");
+        DatabaseReference databaseReference = firebaseDatabase.getReference();
+                //.getReferenceFromUrl("https://finalprojectandroind-default-rtdb.firebaseio.com/");//.child("users");
 
         FirebaseStorage storage = FirebaseStorage.getInstance();
         storageReference = storage.getReferenceFromUrl("gs://finalprojectandroind.appspot.com/");
@@ -74,30 +78,44 @@ public class EditProfile extends Fragment {
         nameForUpdate = sharedPreferences.getString(USERNAME, "");
         score = sharedPreferences.getString(SCORE,"");
 
-        databaseReference.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot datasnapshot) {
-                for(DataSnapshot snapshot : datasnapshot.getChildren()){
-                    User user = snapshot.getValue(User.class);
-                    if (user != null && user.getUsername().equals(sharedPreferences.getString(USERNAME, ""))) {
-                        binding.editEmail.setEnabled(false);
-                        binding.editEmail.setText(user.getEmail());
-                        binding.editUsername.setText(user.getUsername());
-                        Picasso.get().load(user.getImage()).into(binding.editPic);
-                        uid = snapshot.getKey();
-                        pass = user.getPassword();
-                        imgPath = user.getImage();
-                        break;
-                    }
+        databaseReference.child("users").child(sharedPreferences.getString(EMAIL, "")).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+              @Override
+              public void onComplete(@NonNull Task<DataSnapshot> task) {
+                  if (task.isSuccessful()) {
+                      User user = task.getResult().getValue(User.class);
+                      emailET.setEnabled(false);
+                      assert user != null;
+                      emailET.setText(user.getEmail());
+                      usernameET.setText(user.getUsername());
+                      Picasso.get().load(user.getImage()).into(imageView);
+                      imgPath = user.getImage();
+                  }
+              }
+          });
 
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
+//        databaseReference.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot datasnapshot) {
+//                for(DataSnapshot snapshot : datasnapshot.getChildren()){
+//                    User user = snapshot.getValue(User.class);
+//                    if (user != null && user.getUsername().equals(sharedPreferences.getString(USERNAME, ""))) {
+//                        emailET.setEnabled(false);
+//                        emailET.setText(user.getEmail());
+//                        usernameET.setText(user.getUsername());
+//                        Picasso.get().load(user.getImage()).into(imageView);
+//                        uid = snapshot.getKey();
+//                        imgPath = user.getImage();
+//                        break;
+//                    }
+//
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        });
 
         binding.editBackBtn.setOnClickListener(item -> getParentFragmentManager().popBackStack());
 
@@ -108,12 +126,12 @@ public class EditProfile extends Fragment {
                         "Profile picture Changed",
                               Toast.LENGTH_LONG).show();
             }
+
             User editUser = new User(binding.editUsername.getText().toString(),
                                     binding.editEmail.getText().toString(),
-                                    pass,
                                     imgPath,
                                     Integer.parseInt(score));
-            databaseReference.child("users").child(uid).setValue(editUser);
+            databaseReference.child("users").child(sharedPreferences.getString(EMAIL, "")).setValue(editUser);
             databaseReference.child("places").addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot datasnapshot) {
