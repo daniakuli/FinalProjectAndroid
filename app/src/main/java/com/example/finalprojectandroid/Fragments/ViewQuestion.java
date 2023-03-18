@@ -1,12 +1,12 @@
 package com.example.finalprojectandroid.Fragments;
 
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,13 +18,12 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.example.finalprojectandroid.Models.Pictures;
 import com.example.finalprojectandroid.Models.User;
 import com.example.finalprojectandroid.R;
+import com.example.finalprojectandroid.databinding.ViewQuestionBinding;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -43,6 +42,7 @@ import java.util.List;
 
 public class ViewQuestion extends Fragment {
 
+    private ViewQuestionBinding binding;
 
     private SharedPreferences sharedPreferences;
     private static final String SCORE = "0";
@@ -51,20 +51,14 @@ public class ViewQuestion extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.view_question, container, false);
-        ProgressBar spinner = view.findViewById(R.id.progressBar1);
-        spinner.setVisibility(View.VISIBLE);
+        binding = ViewQuestionBinding.inflate(inflater, container, false);
+        View view = binding.getRoot();
+        
+        binding.progressBar1.setVisibility(View.VISIBLE);
 
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         DatabaseReference databaseReference = firebaseDatabase.getReferenceFromUrl("https://finalprojectandroind-default-rtdb.firebaseio.com/");
 
-        ImageView imageView = view.findViewById(R.id.image_view);
-        TextView questionText = view.findViewById(R.id.question);
-        Button saveButton = view.findViewById(R.id.save_answer);
-        RadioButton radioButton1 = view.findViewById(R.id.radio_button_1);
-        RadioButton radioButton2 = view.findViewById(R.id.radio_button_2);
-        RadioButton radioButton3 = view.findViewById(R.id.radio_button_3);
-        RadioButton radioButton4 = view.findViewById(R.id.radio_button_4);
 
         Bundle args = getArguments();
         String otherUser = "";
@@ -115,14 +109,16 @@ public class ViewQuestion extends Fragment {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Pictures pictures = snapshot.getValue(Pictures.class);
 //                    if(pictures.getUsername().equals(finalOtherUser) && pictures.getImage().equals(finalOtherImageUrl)) {
-                    Picasso.get().load(pictures.getImage()).resize(450, 0).into(imageView);
+
+                    Picasso.get().load(pictures.getImage()).resize(450, 0).into(binding.imageView);
                     spinner.setVisibility(View.GONE);
-                    questionText.setText("Where is the picture taken?");
-                    radioButton1.setText(pictures.getCountry() + ", " + pictures.getCity());
-                    radioButton2.setText("Russia, Moscow");
-                    radioButton3.setText("Finland, Helsinki");
-                    radioButton4.setText("Germany, Berlin");
+                    binding.questionText.setText("Where is the picture taken?");
+                    binding.radioButton1.setText(pictures.getCountry() + ", " + pictures.getCity());
+                    binding.radioButton2.setText("Russia, Moscow");
+                    binding.radioButton3.setText("Finland, Helsinki");
+                    binding.radioButton4.setText("Germany, Berlin");
 //                    }
+
                 }
             }
 
@@ -131,6 +127,12 @@ public class ViewQuestion extends Fragment {
 
             }
 
+        });
+        binding.saveAnswer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getParentFragmentManager().popBackStack();
+            }
         });
         return view;
     }
