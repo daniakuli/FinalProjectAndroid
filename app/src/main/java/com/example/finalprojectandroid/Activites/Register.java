@@ -19,7 +19,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.finalprojectandroid.Models.AppDatabase;
 import com.example.finalprojectandroid.Models.FirebaseStorageManager;
+import com.example.finalprojectandroid.Models.RoomDatabaseManager;
 import com.example.finalprojectandroid.R;
 import com.example.finalprojectandroid.Models.User;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -43,7 +45,7 @@ public class Register extends AppCompatActivity {
     private final DatabaseReference databaseReference = firebaseDatabase.getReference();
             //getReferenceFromUrl("https://finalprojectandroind-default-rtdb.firebaseio.com/");
     private FirebaseAuth mAuth;
-    private StorageReference storageReference;
+    private FirebaseStorageManager storageReference;
     
     private Uri fileUri;
     private ImageView picImageView;
@@ -112,7 +114,8 @@ public class Register extends AppCompatActivity {
                 Toast.makeText(Register.this,"Password should contain 6 characters!", Toast.LENGTH_SHORT).show();
             }
             else{
-                String imgPath = "https://firebasestorage.googleapis.com/v0/b/finalprojectandroind.appspot.com/o/images%2F" + uploadImage() + "?alt=media";
+                String imgPath = "https://firebasestorage.googleapis.com/v0/b/finalprojectandroind.appspot.com/o/images%2F" + storageReference.uploadImage(fileUri) + "?alt=media";
+
                 registerToFireBaseAuth(email, password, username, imgPath);
             }
         });
@@ -126,24 +129,6 @@ public class Register extends AppCompatActivity {
         intent.setAction(Intent.ACTION_GET_CONTENT);
         mStartForResult.launch(intent);
     }
-
-    /*private String uploadImage(){
-        String imgUID = UUID.randomUUID().toString();
-        StorageReference ref =
-                storageReference.child(
-                        "images/" + imgUID);
-
-        ref.putFile(fileUri)
-                .addOnSuccessListener(taskSnapshot -> Toast.makeText(Register.this,
-                        "Image uploaded",
-                        Toast.LENGTH_LONG).show())
-                .addOnFailureListener(e -> Toast
-                        .makeText(Register.this,
-                                "Failed " + e.getMessage(),
-                                Toast.LENGTH_SHORT)
-                        .show());
-        return imgUID;
-    }*/
 
     ActivityResultLauncher<Intent> mStartForResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
@@ -177,6 +162,8 @@ public class Register extends AppCompatActivity {
                         User user = new User(username, email, imgPath, 0);
                         databaseReference.child("users").child(email.substring(0, email.indexOf('.'))).setValue(user)
                             .addOnSuccessListener(unused -> {
+                                RoomDatabaseManager roomDatabaseManager = new RoomDatabaseManager(Register.this);
+                                roomDatabaseManager.insertUser(user);
                                 Toast.makeText(Register.this, "User registered successfully", Toast.LENGTH_SHORT).show();
                                 finish();
                             })

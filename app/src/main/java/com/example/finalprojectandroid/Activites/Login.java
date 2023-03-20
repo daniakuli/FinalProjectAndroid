@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -31,6 +32,7 @@ public class Login extends AppCompatActivity {
     private static final String LOGGED_IN = "logged_in";
     private static final String USERNAME = "username";
     private static final String EMAIL = "email";
+    private static final String FULL_EMAIL = "fullEmail";
     private static final String SCORE = "0";
     public Integer score;
     private FirebaseAuth mAuth;
@@ -89,6 +91,7 @@ public class Login extends AppCompatActivity {
                                         editor.putBoolean(LOGGED_IN, true);
                                         assert user != null;
                                         editor.putString(USERNAME, user.getUsername());
+                                        editor.putString(FULL_EMAIL, email);
                                         editor.putString(EMAIL, email.substring(0, email.indexOf('.')));
                                         editor.putString(SCORE, user.getScore().toString());
                                         editor.apply();

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,6 +25,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.finalprojectandroid.Adapters.ProfileAdapter;
 import com.example.finalprojectandroid.Activites.Login;
+import com.example.finalprojectandroid.Interfaces.UsersDao;
+import com.example.finalprojectandroid.Models.AppDatabase;
 import com.example.finalprojectandroid.Models.Pictures;
 import com.example.finalprojectandroid.R;
 import com.example.finalprojectandroid.Models.User;
@@ -43,11 +46,13 @@ import com.squareup.picasso.Picasso;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class ProfilePage extends Fragment{
 
     private static final String USERNAME = "username";
-    private static final String EMAIL = "email";
+    private static final String FULL_EMAIL = "fullEmail";
     private static final String SCORE = "0";
     private SharedPreferences sharedPreferences;
     private ProfileAdapter profileAdapter;
@@ -69,42 +74,51 @@ public class ProfilePage extends Fragment{
         //DatabaseReference users = firebaseDatabase.getReferenceFromUrl("https://finalprojectandroind-default-rtdb.firebaseio.com/").child("users");
 
 
-        databaseReference.child("users").child(sharedPreferences.getString(EMAIL, "")).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+        /*databaseReference.child("users").child(sharedPreferences.getString(EMAIL, "")).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                @Override
                public void onComplete(@NonNull Task<DataSnapshot> task) {
                    if (task.isSuccessful()) {
                        User user = task.getResult().getValue(User.class);
                        assert user != null;
-                       Picasso.get().load(user.getImage()).into(imageView);
+                       Log.d("userName", user.getUsername());
+                       Picasso.get().load(user.getImage()).into(binding.imageProfile);
                    }
                }
-           });
-//        users.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-//                    User user = snapshot.getValue(User.class);
-//
-//                    if (user != null && user.getUsername()
-//                            .equals(sharedPreferences
-//                                    .getString(USERNAME, ""))) {
-//                        Picasso.get().load(user.getImage()).into(imageView);
-//                        break;
-//                    }
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//
-//            }
-//        });
+           });*/
+
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                AppDatabase db = AppDatabase.getInstance(requireContext());
+                UsersDao userDao = db.usersDao();
+                String email = sharedPreferences.getString(FULL_EMAIL, "");
+                User user = userDao.getUserByEmail(email);
+                List<User> userList = userDao.getAllUsers();
+                binding.recyclerView.setLayoutManager(new GridLayoutManager(getContext(),3));
+                binding.recyclerView.setHasFixedSize(true);
+                binding.recyclerView.setAdapter(profileAdapter);
+                //Log.d("yes",user.getEmail());
+                /*requireActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        String pictureUrl = user.getImage();
+                        Picasso.get()
+                                .load(pictureUrl)
+                                .into(binding.imageProfile);
+                    }
+                });*/
+                //Picasso.get().load(user.getImage()).into(binding.imageProfile);
+                //Log.d("EMAIL", email);
+                // Handle the retrieved user object here
+            }
+        });
 
         binding.profileUserName.setText(sharedPreferences.getString(USERNAME,""));
         binding.scoreUserName.setText(sharedPreferences.getString(SCORE,""));
 
-        binding.recyclerView.setLayoutManager(new GridLayoutManager(getContext(),3));
-        binding.recyclerView.setHasFixedSize(true);
+        //binding.recyclerView.setLayoutManager(new GridLayoutManager(getContext(),3));
+        //binding.recyclerView.setHasFixedSize(true);
 
         picturesList = new ArrayList<>();
         Pictures pictures = new Pictures();

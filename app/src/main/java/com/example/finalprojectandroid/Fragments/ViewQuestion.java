@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,9 +20,12 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
 
+import com.example.finalprojectandroid.Models.CityWiki;
 import com.example.finalprojectandroid.Models.Pictures;
 import com.example.finalprojectandroid.Models.User;
+import com.example.finalprojectandroid.Models.WikipediaModel;
 import com.example.finalprojectandroid.R;
 import com.example.finalprojectandroid.databinding.ViewQuestionBinding;
 import com.google.firebase.database.DataSnapshot;
@@ -53,7 +57,7 @@ public class ViewQuestion extends Fragment {
                              Bundle savedInstanceState) {
         binding = ViewQuestionBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
-        
+
         binding.progressBar1.setVisibility(View.VISIBLE);
 
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
@@ -71,10 +75,10 @@ public class ViewQuestion extends Fragment {
         String finalOtherUser = otherUser;
         String finalOtherImageUrl = otherImageUrl;
 
-        saveButton.setOnClickListener(item -> {
+        binding.saveAnswer.setOnClickListener(item -> {
             sharedPreferences = requireActivity().getSharedPreferences("app_pref", Context.MODE_PRIVATE);
             String score = sharedPreferences.getString(SCORE,"");
-            if(radioButton1.isChecked()) {
+            if(binding.radioButton1.isChecked()) {
                 Integer intScore = Integer.parseInt(score);
                 intScore += 10;
                 sharedPreferences.edit().putString(SCORE, intScore.toString()).apply();
@@ -111,12 +115,16 @@ public class ViewQuestion extends Fragment {
 //                    if(pictures.getUsername().equals(finalOtherUser) && pictures.getImage().equals(finalOtherImageUrl)) {
 
                     Picasso.get().load(pictures.getImage()).resize(450, 0).into(binding.imageView);
-                    spinner.setVisibility(View.GONE);
-                    binding.questionText.setText("Where is the picture taken?");
+                    binding.progressBar1.setVisibility(View.GONE);
+                    binding.question.setText("Where is the picture taken?");
                     binding.radioButton1.setText(pictures.getCountry() + ", " + pictures.getCity());
                     binding.radioButton2.setText("Russia, Moscow");
                     binding.radioButton3.setText("Finland, Helsinki");
                     binding.radioButton4.setText("Germany, Berlin");
+                    LiveData<CityWiki> data = WikipediaModel.instance.getWikiData(pictures.getCity());
+                    data.observe(getViewLifecycleOwner(), kek -> {
+                        Log.d("TAG", "extract: " + kek.getExtract());
+                    });
 //                    }
 
                 }

@@ -7,13 +7,16 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
 import com.example.finalprojectandroid.Interfaces.PicturesDao;
+import com.example.finalprojectandroid.Interfaces.UsersDao;
 
-@Database(entities = {Pictures.class}, version = 1)
+@Database(entities = {Pictures.class, User.class}, version = 7)
 public abstract class AppDatabase extends RoomDatabase {
 
     private static AppDatabase instance;
 
     public abstract PicturesDao picturesDao();
+
+    public abstract UsersDao usersDao();
 
     public static synchronized AppDatabase getInstance(Context context){
         if(instance == null){

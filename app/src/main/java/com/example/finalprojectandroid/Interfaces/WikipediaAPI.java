@@ -1,4 +1,6 @@
-package com.example.finalprojectandroid.Models;
+package com.example.finalprojectandroid.Interfaces;
+
+import com.example.finalprojectandroid.Models.CityWiki;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
