@@ -18,7 +18,9 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import com.example.finalprojectandroid.Activites.Register;
 import com.example.finalprojectandroid.Models.Pictures;
+import com.example.finalprojectandroid.Models.RoomDatabaseManager;
 import com.example.finalprojectandroid.R;
 import com.example.finalprojectandroid.databinding.AddQuestionBinding;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -45,7 +47,7 @@ public class AddQuestion extends Fragment {
     Boolean picChanged = false;
     Uri fileUri;
     ImageView pProfileImage;
-    private static final String USERNAME = "username";
+    private static final String FULL_EMAIL = "fullEmail";
     private AddQuestionBinding binding;
 
 
@@ -56,7 +58,7 @@ public class AddQuestion extends Fragment {
         View view = binding.getRoot();
 
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("app_pref", Context.MODE_PRIVATE);
-        String currUsername = sharedPreferences.getString(USERNAME,"");
+        String currUser = sharedPreferences.getString(FULL_EMAIL,"");
 
         binding.addProfilePic.setOnClickListener(view1 -> {
             choosePic();
@@ -68,17 +70,16 @@ public class AddQuestion extends Fragment {
                 if(fileUri == null){
                     fileUri = Uri.parse("android.resource://com.example.finalprojectandroid/" + R.drawable.user1);
                 }
-//                if(!password.equals(confPass)){
-//                    Toast.makeText(Register.this, "Password are not matching", Toast.LENGTH_LONG).show();
-//                }
                 else{
                     String imgPath = "https://firebasestorage.googleapis.com/v0/b/finalprojectandroind.appspot.com/o/places%2F" + uploadImage() + "?alt=media";
                     Log.d("Check", imgPath);
                     String picID = databaseReference.child("places").push().getKey();
-                    Pictures question = new Pictures(currUsername, imgPath, binding.country.getText().toString(), binding.city.getText().toString());
+                    Pictures question = new Pictures(currUser, imgPath, binding.country.getText().toString(), binding.city.getText().toString());
                     if (picID != null) {
                         databaseReference.child("places").child(picID).setValue(question)
                                 .addOnSuccessListener(unused -> {
+                                    RoomDatabaseManager roomDatabaseManager = new RoomDatabaseManager(getActivity());
+                                    roomDatabaseManager.insertPicture(question);
                                     Toast.makeText(requireActivity(),
                                             "Question registered successfully",
                                             Toast.LENGTH_SHORT).show();
@@ -114,7 +115,7 @@ public class AddQuestion extends Fragment {
                                     Media.
                                     getBitmap(requireActivity().getContentResolver(),
                                             fileUri);
-                            pProfileImage.setImageBitmap(bitmap);
+                            binding.profilePicReg.setImageBitmap(bitmap);
                         }
                         catch (IOException err){
                             err.printStackTrace();
@@ -143,8 +144,4 @@ public class AddQuestion extends Fragment {
                 });
         return imgName;
     }
-    private String uploadQuestion(){
-        return "aaa";
-    }
-
     }

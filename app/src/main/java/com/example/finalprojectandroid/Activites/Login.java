@@ -105,37 +105,6 @@ public class Login extends AppCompatActivity {
                         }
                     }
                 });
-//            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-//                @Override
-//                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                    boolean userExists = false;
-//                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-//                        User user = snapshot.getValue(User.class);
-//
-//                        if (user != null && user.getUsername().equals(username) && user.getPassword().equals(password)) {
-//                            userExists = true;
-//                            if(user.getScore() == null)
-//                                score = 0;
-//                            else
-//                                score = user.getScore();
-//                            break;
-//                        }
-//                    }
-//                    if (userExists) {
-//                        SharedPreferences.Editor editor = sharedPreferences.edit();
-//                        editor.putBoolean(LOGGED_IN, true);
-//                        editor.putString(USERNAME, username);
-//                        editor.putString(SCORE, score.toString());
-//                        editor.apply();
-//                        startActivity(new Intent(Login.this, MainActivity.class));
-//                    }
-//                }
-//
-//                @Override
-//                public void onCancelled(@NonNull DatabaseError error) {
-//                    Toast.makeText(Login.this, "Login failed, please try again.", Toast.LENGTH_SHORT).show();
-//                }
-//            });
         });
 
         regNowBtn.setOnClickListener(view -> startActivity(new Intent(Login.this, Register.class)));

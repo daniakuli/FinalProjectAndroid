@@ -97,6 +97,7 @@ public class ProfilePage extends Fragment{
                 List<User> userList = userDao.getAllUsers();
                 binding.recyclerView.setLayoutManager(new GridLayoutManager(getContext(),3));
                 binding.recyclerView.setHasFixedSize(true);
+                profileAdapter = new ProfileAdapter();
                 binding.recyclerView.setAdapter(profileAdapter);
                 //Log.d("yes",user.getEmail());
                 /*requireActivity().runOnUiThread(new Runnable() {
@@ -123,7 +124,7 @@ public class ProfilePage extends Fragment{
         picturesList = new ArrayList<>();
         Pictures pictures = new Pictures();
 
-        pictures.getData(requireActivity(), picList -> {
+        /*pictures.getData(requireActivity(), picList -> {
             picturesList = picList;
             profileAdapter = new ProfileAdapter();//picturesList);
             binding.recyclerView.setAdapter(profileAdapter);
@@ -138,7 +139,7 @@ public class ProfilePage extends Fragment{
                 dialogFragment.setFragment(ProfilePage.this);
                 dialogFragment.showNow(getParentFragmentManager(), "ImageDialog");
             });
-        }, true);
+        }, true);*/
 
 
         binding.logout.setOnClickListener(item -> {

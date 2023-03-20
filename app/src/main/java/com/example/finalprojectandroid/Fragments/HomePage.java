@@ -37,20 +37,17 @@ public class HomePage extends Fragment {
 
         Pictures pictures = new Pictures();
 
-        //pictures.getData(requireActivity(), picList -> {
-            //picturesList = picList;
-            profileAdapter = new ProfileAdapter();//picturesList);
+            profileAdapter = new ProfileAdapter();
             binding.recyclerView.setAdapter(profileAdapter);
             RoomDatabaseManager roomDatabaseManager = new RoomDatabaseManager(requireContext());
             picturesList = roomDatabaseManager.getAllPictures();
-        roomDatabaseManager.getAllPictures().observe(getViewLifecycleOwner(), profileAdapter:: addData);
+            roomDatabaseManager.getAllPictures().observe(getViewLifecycleOwner(), profileAdapter:: addData);
             profileAdapter.setOnItemClickListener(pos -> {
                 HomePageDirections.ActionHomePageToViewQuestion action
                         = HomePageDirections.actionHomePageToViewQuestion(picturesList.getValue().get(pos).getUsername(),
                                                                           picturesList.getValue().get(pos).getImage());
                 Navigation.findNavController(view).navigate(action);
             });
-        //}, false);
 
 
 
