@@ -78,20 +78,20 @@ public class EditProfile extends Fragment {
         nameForUpdate = sharedPreferences.getString(USERNAME, "");
         score = sharedPreferences.getString(SCORE,"");
 
-        databaseReference.child("users").child(sharedPreferences.getString(EMAIL, "")).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-              @Override
-              public void onComplete(@NonNull Task<DataSnapshot> task) {
-                  if (task.isSuccessful()) {
-                      User user = task.getResult().getValue(User.class);
-                      emailET.setEnabled(false);
-                      assert user != null;
-                      emailET.setText(user.getEmail());
-                      usernameET.setText(user.getUsername());
-                      Picasso.get().load(user.getImage()).into(imageView);
-                      imgPath = user.getImage();
-                  }
-              }
-          });
+//        databaseReference.child("users").child(sharedPreferences.getString(EMAIL, "")).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+//              @Override
+//              public void onComplete(@NonNull Task<DataSnapshot> task) {
+//                  if (task.isSuccessful()) {
+//                      User user = task.getResult().getValue(User.class);
+//                      emailET.setEnabled(false);
+//                      assert user != null;
+//                      emailET.setText(user.getEmail());
+//                      usernameET.setText(user.getUsername());
+//                      Picasso.get().load(user.getImage()).into(imageView);
+//                      imgPath = user.getImage();
+//                  }
+//              }
+//          });
 
 //        databaseReference.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
 //            @Override
