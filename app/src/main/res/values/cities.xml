@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="Afghanistan_cities">
+        <item> Andkhoy </item>
+        <item> Asadabad </item>
+        <item> Baghlan </item>
+        <item> Balkh </item>
+        <item> Bamian </item>
+        <item> Baraki Barak </item>
+        <item> Barmal </item>
+        <item> Bazarak </item>
+        <item> Charikar </item>
+        <item> Ghazni </item>
+        <item> Herat </item>
+        <item> Jalalabad </item>
+        <item> Kandahar </item>
+        <item> Kapisa </item>
+        <item> Khost </item>
+        <item> Kunduz </item>
+        <item> Lashkar Gah </item>
+        <item> Mahmud-e Raqi </item>
+        <item> Mehtar Lam </item>
+        <item> Mihtarlam </item>
+        <item> Mazar-i-Sharif </item>
+        <item> Nangarhar </item>
+        <item> Pul-i-Alam </item>
+        <item> Pol-e Khomri </item>
+        <item> Qalat </item>
+        <item> Takhar </item>
+        <item> Zaranj </item>
+</string-array>
+    <string-array name="Albania_cities">
+        <item> Berat </item>
+        <item> Bulqizë </item>
+        <item> Delvinë </item>
+        <item> Divjakë </item>
+        <item> Durrës </item>
+        <item> Elbasan </item>
+        <item> Fier </item>
+        <item> Fushë-Arrëz </item>
+        <item> Gjirokastër </item>
+        <item> Gjimnastik </item>
+        <item> Himarë </item>
+        <item> Kavajë </item>
+        <item> Kopitemk </item>
+        <item> Korçë </item>
+        <item> Krujë </item>
+        <item> Kuçovë </item>
+        <item> Kukës </item>
+        <item> Laç </item>
+        <item> Lezhë </item>
+        <item> itembohovë </item>
+        <item> itembrazhd </item>
+        <item> Lushnjë </item>
+        <item> Patos </item>
+        <item> Pogradec </item>
+        <item> Sarandë </item>
+        <item> Shkodër </item>
+        <item> Tirana </item>
+        <item> Vlorë </item>
+    </string-array>
+    <string-array name="Algeria_cities">
+        <item> Algiers </item>
+        <item> Annaba </item>
+        <item> Batna </item>
+        <item> Bechar </item>
+        <item> Bitemda </item>
+        <item> Chlef </item>
+        <item> Constantine </item>
+        <item> Djelfa </item>
+        <item> El Bayadh </item>
+        <item> El Oued </item>
+        <item> Ghardaia </item>
+        <item> Guelma </item>
+        <item> Jijel </item>
+        <item> Laghouat </item>
+        <item> Mascara </item>
+        <item> Medea </item>
+        <item> Mila </item>
+        <item> Mostaganem </item>
+        <item> Oran </item>
+        <item> Ouargla </item>
+        <item> Reitemzane </item>
+        <item> Setif </item>
+        <item> Sidi Bel Abbes </item>
+        <item> Skikda </item>
+        <item> Tamanghasset </item>
+        <item> Tébessa </item>
+        <item> Tiaret </item>
+        <item> Tlemcen </item>
+    </string-array>
+    <string-array name="Andorra_cities">
+        <item> Andorra la Vella </item>
+        <item> Escaldes-Engordany </item>
+    </string-array>
+    <string-array name="Angola_cities">
+        <item> Benguela </item>
+        <item> Cabinda </item>
+        <item> Caluquembe </item>
+        <item> Camacupa </item>
+        <item> Camabatela </item>
+        <item> Cazombo </item>
+        <item> Chissamba </item>
+        <item> Chitato </item>
+        <item> Dondo </item>
+        <item> Dundo </item>
+        <item> Huambo </item>
+        <item> Kuito </item>
+        <item> Longonjo </item>
+        <item> Lucapa </item>
+        <item> Luanda </item>
+        <item> Lubango </item>
+        <item> Lucala </item>
+        <item> Malanje </item>
+        <item> Mbanza Congo </item>
+        <item> Namibe </item>
+        <item> Ndalatando </item>
+        <item> Negage </item>
+        <item> Ondjiva </item>
+        <item> Saurimo </item>
+        <item> Sumbe </item>
+        <item> Uíge </item>
+        <item> Viana </item>
+        <item> Xangongo </item>
+    </string-array>
+</resources>

@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:gravity="center"
     android:orientation="vertical"
-    tools:context=".Login">
+    tools:context=".Activites.Login">
     
     <TextView
         android:id="@+id/loginTxt"
@@ -20,14 +20,14 @@
 
 
     <EditText
-        android:id="@+id/username"
+        android:id="@+id/email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
-        android:hint="@string/username"
-        android:autofillHints="username"
-        android:inputType="text"
+        android:hint="@string/email"
+        android:autofillHints="emailAddress"
+        android:inputType="textEmailAddress"
         android:minHeight="48dp"
         android:paddingStart="20dp"
         android:paddingEnd="0dp" />

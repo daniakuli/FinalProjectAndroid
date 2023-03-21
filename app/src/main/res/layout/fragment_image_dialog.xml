@@ -31,7 +31,7 @@
             android:orientation="horizontal">
 
             <EditText
-                android:id="@+id/text_view_1"
+                android:id="@+id/countryET"
                 android:layout_width="0dp"
                 android:background="@null"
                 android:layout_height="wrap_content"
@@ -39,7 +39,7 @@
                 android:textAlignment="center"/>
 
             <EditText
-                android:id="@+id/text_view_2"
+                android:id="@+id/cityET"
                 android:layout_width="0dp"
                 android:background="@null"
                 android:layout_height="wrap_content"
@@ -66,10 +66,16 @@
             android:layout_marginTop="16dp"
             android:layout_gravity="center_horizontal"/>
 
+        <TextView
+            android:id="@+id/description"
+            android:layout_width="match_parent"
+            android:layout_height="265dp"
+            android:text="Description" />
+
     </LinearLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/floatingActionButton"
+        android:id="@+id/changePicture"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:clickable="true"
