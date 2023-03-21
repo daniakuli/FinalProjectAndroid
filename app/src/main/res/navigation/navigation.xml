@@ -40,7 +40,11 @@
         android:id="@+id/addQuestionPage"
         android:name="com.example.finalprojectandroid.Fragments.AddQuestion"
         android:label="add_question"
-        tools:layout="@layout/add_question" />
+        tools:layout="@layout/add_question">
+<!--        <action-->
+<!--            android:id="@+id/action_addQuestion_to_homePage"-->
+<!--            app:destination="@id/homePage" />-->
+    </fragment>
     <fragment
         android:id="@+id/viewQuestionPage"
         android:name="com.example.finalprojectandroid.Fragments.ViewQuestion"
