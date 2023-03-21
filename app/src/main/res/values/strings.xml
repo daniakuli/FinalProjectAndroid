@@ -3,7 +3,7 @@
     <string name="register_now">Register Now</string>
     <string name="sign_in">Sign In</string>
     <string name="login">Login now</string>
-    <string name="email">Enter your E-mail</string>
+    <string name="email">Enter E-mail</string>
     <string name="username">Enter user name</string>
     <string name="password">Enter password</string>
     <string name="conf_password">Confirm password</string>

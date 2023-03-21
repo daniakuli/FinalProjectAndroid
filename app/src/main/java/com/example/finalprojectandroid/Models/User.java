@@ -1,10 +1,22 @@
+
 package com.example.finalprojectandroid.Models;
 
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+import androidx.annotation.NonNull;
+
+@Entity(tableName = "users")
 public class User {
+
+    @PrimaryKey
+    @NonNull
+    private String email = "";
+    @ColumnInfo(name = "username")
     private String username;
-    private String email;
-    private String password;
+    @ColumnInfo(name = "imgUrl")
     private String image;
+    @ColumnInfo(name = "score")
     private Integer score;
 
     public User() {
@@ -12,12 +24,10 @@ public class User {
 
     public User(String username,
                 String email,
-                String password,
                 String image,
                 Integer score) {
         this.username = username;
         this.email = email;
-        this.password = password;
         this.image = image;
         this.score = score;
     }
@@ -26,23 +36,19 @@ public class User {
         return username;
     }
 
+    public String getEmail() { return email; }
+
+    public String getImage() {return image;}
+
+    public Integer getScore() { return score; }
+
     public void setUsername(String username) {
         this.username = username;
     }
 
-    public String getEmail() {
-        return email;
-    }
+    public void setEmail(String email) { this.email = email; }
 
+    public void setImage(String image) { this.image = image; }
 
-    public String getPassword() {
-        return password;
-    }
-
-
-    public String getImage() {return image;}
-
-    public Integer getScore() {
-        return score;
-    }
+    public void setScore(Integer score) { this.score = score; }
 }

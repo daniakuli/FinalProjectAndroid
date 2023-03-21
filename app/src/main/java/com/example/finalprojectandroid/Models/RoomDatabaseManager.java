@@ -19,6 +19,12 @@ public class RoomDatabaseManager {
         }).start();
     }
 
+    public void insertUser(User user){
+        new Thread(() -> {
+            appDatabase.usersDao().insertUser(user);
+        }).start();
+    }
+
     public LiveData<List<Pictures>> getAllPictures() {
         return appDatabase.picturesDao().getAllPictures();
     }
