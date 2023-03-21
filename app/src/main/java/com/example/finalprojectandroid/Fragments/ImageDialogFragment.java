@@ -28,7 +28,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.finalprojectandroid.Activites.Register;
 import com.example.finalprojectandroid.Models.Pictures;
+import com.example.finalprojectandroid.Models.RoomDatabaseManager;
 import com.example.finalprojectandroid.R;
 import com.example.finalprojectandroid.databinding.FragmentImageDialogBinding;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -46,7 +48,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class ImageDialogFragment extends DialogFragment {
-    private static final String USERNAME = "username";
+    private static final String FULL_EMAIL = "fullEmail";
     private SharedPreferences sharedPreferences;
 
     private String imageUrl;
@@ -95,10 +97,10 @@ public class ImageDialogFragment extends DialogFragment {
         this.binding.cityET.setText(city);
 
         binding.btnEdit.setOnClickListener(item -> {
-            this.binding.countryET.setEnabled(true);
-            this.binding.countryET.setPaintFlags(this.binding.countryET.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-            this.binding.cityET.setEnabled(true);
-            this.binding.cityET.setPaintFlags(this.binding.cityET.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+            binding.countryET.setEnabled(true);
+            binding.countryET.setPaintFlags(binding.countryET.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+            binding.cityET.setEnabled(true);
+            binding.cityET.setPaintFlags(binding.cityET.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
             binding.btnSave.setVisibility(View.VISIBLE);
             binding.btnEdit.setVisibility(View.GONE);
             binding.changePicture.show();
@@ -113,13 +115,16 @@ public class ImageDialogFragment extends DialogFragment {
                         "Profile picture Changed",
                         Toast.LENGTH_LONG).show();
             }
-            String name = sharedPreferences.getString(USERNAME,"");
+            String name = sharedPreferences.getString(FULL_EMAIL,"");
             Pictures pic = new Pictures(name,imageUrl,
-                                        this.binding.countryET.getText().toString(),
-                                        this.binding.cityET.getText().toString());
+                                        binding.countryET.getText().toString(),
+                                        binding.cityET.getText().toString());
             changeData(pic,pos);
 
-            getProfilePage().updateData();
+            getProfilePage().updateData(pic, pos);
+
+            RoomDatabaseManager roomDatabaseManager = new RoomDatabaseManager(getActivity());
+            roomDatabaseManager.updatePicture(pic);
 
             dismiss();
         });

@@ -45,11 +45,9 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
         return picturesList.size();
     }
 
-    public void addData(List<Pictures> picturesList) {
+    public void setData(List<Pictures> picturesList) {
         this.picturesList = picturesList;
         notifyDataSetChanged();
-        //picturesList.set(pos, pic);
-        //notifyItemChanged(pos,pic);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

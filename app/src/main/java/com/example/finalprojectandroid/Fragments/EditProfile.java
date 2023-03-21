@@ -14,7 +14,6 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 
@@ -26,10 +25,10 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.finalprojectandroid.Models.Pictures;
+import com.example.finalprojectandroid.Models.RoomDatabaseManager;
 import com.example.finalprojectandroid.Models.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.example.finalprojectandroid.databinding.FragmentEditProfileBinding;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -49,6 +48,7 @@ public class EditProfile extends Fragment {
     private StorageReference storageReference;
     private static final String USERNAME = "username";
     private static final String EMAIL = "email";
+    private static final String FULL_EMAIL = "fullEmail";
     private static final String SCORE = "0";
     private String uid = "";
     private String imgPath = "";
@@ -75,47 +75,30 @@ public class EditProfile extends Fragment {
 
 
         sharedPreferences = requireActivity().getSharedPreferences("app_pref", Context.MODE_PRIVATE);
-        nameForUpdate = sharedPreferences.getString(USERNAME, "");
+        nameForUpdate = sharedPreferences.getString(FULL_EMAIL, "");
         score = sharedPreferences.getString(SCORE,"");
+        binding.editEmail.setEnabled(false);
 
-        databaseReference.child("users").child(sharedPreferences.getString(EMAIL, "")).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+        /*databaseReference.child("users").child(sharedPreferences.getString(EMAIL, "")).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
               @Override
               public void onComplete(@NonNull Task<DataSnapshot> task) {
                   if (task.isSuccessful()) {
                       User user = task.getResult().getValue(User.class);
-                      emailET.setEnabled(false);
+                      binding.editEmail.setEnabled(false);
                       assert user != null;
-                      emailET.setText(user.getEmail());
-                      usernameET.setText(user.getUsername());
-                      Picasso.get().load(user.getImage()).into(imageView);
+                      binding.editEmail.setText(user.getEmail());
+                      binding.editUsername.setText(user.getUsername());
+                      Picasso.get().load(user.getImage()).into(binding.editPic);
                       imgPath = user.getImage();
                   }
               }
-          });
+          });*/
 
-//        databaseReference.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot datasnapshot) {
-//                for(DataSnapshot snapshot : datasnapshot.getChildren()){
-//                    User user = snapshot.getValue(User.class);
-//                    if (user != null && user.getUsername().equals(sharedPreferences.getString(USERNAME, ""))) {
-//                        emailET.setEnabled(false);
-//                        emailET.setText(user.getEmail());
-//                        usernameET.setText(user.getUsername());
-//                        Picasso.get().load(user.getImage()).into(imageView);
-//                        uid = snapshot.getKey();
-//                        imgPath = user.getImage();
-//                        break;
-//                    }
-//
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//
-//            }
-//        });
+
+        RoomDatabaseManager roomDatabaseManager = new RoomDatabaseManager(getActivity());
+
+        roomDatabaseManager.getUserByEmail(nameForUpdate);
+
 
         binding.editBackBtn.setOnClickListener(item -> getParentFragmentManager().popBackStack());
 
@@ -137,7 +120,7 @@ public class EditProfile extends Fragment {
                 public void onDataChange(@NonNull DataSnapshot datasnapshot) {
                     for(DataSnapshot snapshot : datasnapshot.getChildren()){
                         Pictures pic = snapshot.getValue(Pictures.class);
-                        if (pic != null && pic.getUsername().equals(nameForUpdate)) {
+                        if (pic != null && pic.getEmail().equals(nameForUpdate)) {
                             databaseReference
                                     .child("places")
                                     .child(Objects.requireNonNull(snapshot.getKey()))

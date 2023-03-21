@@ -26,8 +26,8 @@ public class Pictures implements Parcelable {
 
     @PrimaryKey(autoGenerate = true)
     private int id;
-    @ColumnInfo(name = "username")
-    private String username;
+    @ColumnInfo(name = "email")
+    private String email;
     @ColumnInfo(name = "imgUrl")
     private String image;
     @ColumnInfo(name = "country")
@@ -38,15 +38,15 @@ public class Pictures implements Parcelable {
     public Pictures() {
     }
 
-    public Pictures(String username,String image, String country, String city) {
-        this.username = username;
+    public Pictures(String email, String image, String country, String city) {
+        this.email = email;
         this.image = image;
         this.country = country;
         this.city = city;
     }
 
     protected Pictures(Parcel in) {
-        username = in.readString();
+        email = in.readString();
         image = in.readString();
         country = in.readString();
         city = in.readString();
@@ -78,11 +78,11 @@ public class Pictures implements Parcelable {
         return city;
     }
 
-    public String getUsername() { return username; }
+    public String getEmail() { return email; }
 
     public void setId(int id) { this.id = id; }
 
-    public void setUsername(String username) { this.username = username; }
+    public void setEmail(String email) { this.email = email; }
 
     public void setImage(String image) { this.image = image; }
 
@@ -106,10 +106,10 @@ public class Pictures implements Parcelable {
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                     Pictures pic = snapshot.getValue(Pictures.class);
                     if (pic != null) {
-                        if(isProfile && pic.username.equals(name)) {
+                        if(isProfile && pic.email.equals(name)) {
                             picturesList.add(pic);
                         }
-                        else if(!isProfile && !pic.username.equals(name)){
+                        else if(!isProfile && !pic.email.equals(name)){
                             picturesList.add(pic);
                         }
                     }
@@ -131,7 +131,7 @@ public class Pictures implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(username);
+        parcel.writeString(email);
         parcel.writeString(image);
         parcel.writeString(country);
         parcel.writeString(city);
