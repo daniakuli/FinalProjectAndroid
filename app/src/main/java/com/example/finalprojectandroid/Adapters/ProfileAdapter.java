@@ -6,6 +6,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.finalprojectandroid.DataBase.ImageUtils;
 import com.example.finalprojectandroid.Interfaces.OnItemClickListener;
 import com.example.finalprojectandroid.Models.Pictures;
 import com.example.finalprojectandroid.R;
@@ -37,7 +39,7 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Pictures pictures = picturesList.get(position);
-        Picasso.get().load(pictures.getImage()).into(holder.imageView);
+        ImageUtils.loadImageFromPictures(pictures,holder.imageView);
     }
 
     @Override

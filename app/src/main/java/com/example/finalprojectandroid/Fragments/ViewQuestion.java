@@ -22,6 +22,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 
+import com.example.finalprojectandroid.DataBase.ImageUtils;
 import com.example.finalprojectandroid.Models.CityWiki;
 import com.example.finalprojectandroid.Models.Pictures;
 import com.example.finalprojectandroid.Models.User;
@@ -114,7 +115,10 @@ public class ViewQuestion extends Fragment {
                     Pictures pictures = snapshot.getValue(Pictures.class);
 //                    if(pictures.getUsername().equals(finalOtherUser) && pictures.getImage().equals(finalOtherImageUrl)) {
 
-                    Picasso.get().load(pictures.getImage()).resize(450, 0).into(binding.imageView);
+                    ImageUtils.loadImageFromPictures(pictures,binding.imageView);
+                    binding.imageView.setMaxHeight(150);
+                    binding.imageView.setMaxWidth(0);
+                    //.resize(450, 0).into(binding.imageView);
                     binding.progressBar1.setVisibility(View.GONE);
                     binding.question.setText("Where is the picture taken?");
                     binding.radioButton1.setText(pictures.getCountry() + ", " + pictures.getCity());

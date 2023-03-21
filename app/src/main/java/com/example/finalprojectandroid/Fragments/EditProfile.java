@@ -93,7 +93,7 @@ public class EditProfile extends Fragment {
 
         binding.editSave.setOnClickListener(item -> {
             if(picChanged){
-                imgPath = "https://firebasestorage.googleapis.com/v0/b/finalprojectandroind.appspot.com/o/places%2F" + uploadImage() + "?alt=media";
+                imgPath = "https://firebasestorage.googleapis.com/v0/b/finalprojectandroind.appspot.com/o/images%2F" + uploadImage() + "?alt=media";
                 Toast.makeText(getActivity(),
                         "Profile picture Changed",
                               Toast.LENGTH_LONG).show();
@@ -188,8 +188,10 @@ public class EditProfile extends Fragment {
 
         ref.putFile(fileUri)
                 .addOnSuccessListener(taskSnapshot -> {
+//                    profilePage.refreshImage();
                 })
-                .addOnFailureListener(e -> Log.e("not ok","Not working"));
+                .addOnFailureListener(e ->
+                        Log.e("not ok","Not working"));
         return imgUID;
     }
 }

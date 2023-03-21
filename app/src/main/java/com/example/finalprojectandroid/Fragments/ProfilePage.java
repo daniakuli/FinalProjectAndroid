@@ -57,16 +57,6 @@ public class ProfilePage extends Fragment{
         //DatabaseReference databaseReference = firebaseDatabase.getReference();
 
         String email = sharedPreferences.getString(FULL_EMAIL, "");
-        /*ExecutorService executorService = Executors.newSingleThreadExecutor();
-        executorService.execute(new Runnable() {
-            @Override
-            public void run() {
-                AppDatabase db = AppDatabase.getInstance(requireContext());
-                UsersDao userDao = db.usersDao();
-                User user = userDao.getUserByEmail(email);
-                List<User> userList = userDao.getAllUsers();
-            }
-        });*/
 
         binding.profileUserName.setText(sharedPreferences.getString(USERNAME,""));
         binding.scoreUserName.setText(sharedPreferences.getString(SCORE,""));
@@ -121,7 +111,12 @@ public class ProfilePage extends Fragment{
         });
         return view;
     }
-
+    public void refreshImage(){
+        RoomDatabaseManager roomDatabaseManager =new RoomDatabaseManager(getActivity());
+        String email = sharedPreferences.getString(FULL_EMAIL, "");
+        List<User> userData = roomDatabaseManager.getUserByEmail(email);
+        Picasso.get().load(userData.get(0).getImage()).into(binding.imageProfile);
+    }
     public void updateRecycler(){
         profileAdapter.notifyDataSetChanged();
     }
