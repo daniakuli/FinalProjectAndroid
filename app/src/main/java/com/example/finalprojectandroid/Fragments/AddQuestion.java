@@ -92,9 +92,9 @@ public class AddQuestion extends Fragment {
                                     Toast.makeText(requireActivity(),
                                             "Question registered successfully",
                                             Toast.LENGTH_SHORT).show();
-                                    //requireActivity().finish();
+                                    requireActivity().finish();
 
-                                    Navigation.findNavController(view).navigate(R.id.action_addQuestion_to_homePage);
+                                    //Navigation.findNavController(view).navigate(R.id.action_profilePage_to_editPage);
                                 })
                                 .addOnFailureListener(e -> Toast.makeText(requireActivity(),
                                         "Question registered failed",
