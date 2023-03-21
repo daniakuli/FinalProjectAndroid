@@ -5,7 +5,9 @@ import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.Update;
 
+import com.example.finalprojectandroid.Models.Pictures;
 import com.example.finalprojectandroid.Models.User;
 
 import java.util.List;
@@ -19,6 +21,9 @@ public interface UsersDao {
     @Insert
     void insertUser(User user);
 
+    @Update
+    void update(User user);
+
     @Delete
     void deleteUser(User User);
 
@@ -26,5 +31,5 @@ public interface UsersDao {
     void deleteAllPictures();
 
     @Query("SELECT * FROM users WHERE email = :email")
-    User getUserByEmail(String email);
+    List<User> getUserByEmail(String email);
 }

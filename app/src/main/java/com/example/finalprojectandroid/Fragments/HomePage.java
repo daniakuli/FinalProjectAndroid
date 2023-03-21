@@ -1,5 +1,7 @@
 package com.example.finalprojectandroid.Fragments;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,21 +12,19 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.finalprojectandroid.Adapters.ProfileAdapter;
 import com.example.finalprojectandroid.Models.Pictures;
 import com.example.finalprojectandroid.Models.RoomDatabaseManager;
-import com.example.finalprojectandroid.R;
 import com.example.finalprojectandroid.databinding.FragmentHomeBinding;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class HomePage extends Fragment {
-    //private RecyclerView recyclerView;
     private ProfileAdapter profileAdapter;
-    private LiveData<List<Pictures>> picturesList;
+    private List<Pictures> picturesList;
+    private SharedPreferences sharedPreferences;
+    private static final String FULL_EMAIL = "fullEmail";
     FragmentHomeBinding binding;
 
     @Override
@@ -35,20 +35,24 @@ public class HomePage extends Fragment {
 
         binding.recyclerView.setLayoutManager(new GridLayoutManager(getContext(),3));
         binding.recyclerView.setHasFixedSize(true);
+        profileAdapter = new ProfileAdapter();
+        binding.recyclerView.setAdapter(profileAdapter);
 
-        Pictures pictures = new Pictures();
+        sharedPreferences = requireActivity().getSharedPreferences("app_pref", Context.MODE_PRIVATE);
+        String email = sharedPreferences.getString(FULL_EMAIL, "");
 
-            profileAdapter = new ProfileAdapter();
-            binding.recyclerView.setAdapter(profileAdapter);
-            RoomDatabaseManager roomDatabaseManager = new RoomDatabaseManager(requireContext());
-            picturesList = roomDatabaseManager.getAllPictures();
-            Log.d("checking", "isEmpty? : " + picturesList.getValue());
-            roomDatabaseManager.getAllPictures().observe(getViewLifecycleOwner(), profileAdapter:: addData);
+        RoomDatabaseManager roomDatabaseManager = new RoomDatabaseManager(getActivity());
+
+        roomDatabaseManager.getAllOtherPictures(email).observe(getViewLifecycleOwner(), list -> {
+            profileAdapter.setData(list);
+            picturesList = list;
+        });
             profileAdapter.setOnItemClickListener(pos -> {
-                //HomePageDirections.ActionHomePageToViewQuestion action
-                //        = HomePageDirections.actionHomePageToViewQuestion(picturesList.getValue().get(pos).getUsername(),
-                //                                                          picturesList.getValue().get(pos).getImage());
-                //Navigation.findNavController(view).navigate(action);
+                Pictures pic = picturesList.get(pos);
+                HomePageDirections.ActionHomePageToViewQuestion action
+                        = HomePageDirections.actionHomePageToViewQuestion(pic.getEmail(),
+                                                                          pic.getImage());
+                Navigation.findNavController(view).navigate(action);
             });
 
 

@@ -5,6 +5,7 @@ import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.Update;
 
 import com.example.finalprojectandroid.Models.Pictures;
 
@@ -24,4 +25,13 @@ public interface PicturesDao {
 
     @Query("DELETE FROM pictures")
     void deleteAllPictures();
+
+    @Update
+    void update(Pictures picture);
+
+    @Query("SELECT * FROM pictures WHERE email = :email")
+    LiveData<List<Pictures>> getThisUserPictures(String email);
+
+    @Query("SELECT * FROM pictures WHERE email != :email")
+    LiveData<List<Pictures>> getAllOtherPictures(String email);
 }

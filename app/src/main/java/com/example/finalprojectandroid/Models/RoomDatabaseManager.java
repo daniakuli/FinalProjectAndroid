@@ -25,7 +25,35 @@ public class RoomDatabaseManager {
         }).start();
     }
 
+    public List<User> getUserByEmail(String userEmail){
+      return appDatabase.usersDao().getUserByEmail(userEmail);
+    }
+
+    public List<User> getAllUsers(){
+        return appDatabase.usersDao().getAllUsers();
+    }
+
+    public void updatePicture(Pictures picture){
+        new Thread(() ->{
+            appDatabase.picturesDao().update(picture);
+        }).start();
+    }
+
+    public void updateUser(User user){
+        new Thread(() ->{
+            appDatabase.usersDao().update(user);
+        }).start();
+    }
+
     public LiveData<List<Pictures>> getAllPictures() {
         return appDatabase.picturesDao().getAllPictures();
+    }
+
+    public LiveData<List<Pictures>> getThisUserPictures(String email){
+        return appDatabase.picturesDao().getThisUserPictures(email);
+    }
+
+    public LiveData<List<Pictures>> getAllOtherPictures(String email){
+        return appDatabase.picturesDao().getAllOtherPictures(email);
     }
 }

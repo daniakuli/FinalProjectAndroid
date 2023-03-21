@@ -14,7 +14,6 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 
@@ -26,10 +25,10 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.finalprojectandroid.Models.Pictures;
+import com.example.finalprojectandroid.Models.RoomDatabaseManager;
 import com.example.finalprojectandroid.Models.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.example.finalprojectandroid.databinding.FragmentEditProfileBinding;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -41,6 +40,7 @@ import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -49,6 +49,7 @@ public class EditProfile extends Fragment {
     private StorageReference storageReference;
     private static final String USERNAME = "username";
     private static final String EMAIL = "email";
+    private static final String FULL_EMAIL = "fullEmail";
     private static final String SCORE = "0";
     private String uid = "";
     private String imgPath = "";
@@ -75,53 +76,24 @@ public class EditProfile extends Fragment {
 
 
         sharedPreferences = requireActivity().getSharedPreferences("app_pref", Context.MODE_PRIVATE);
-        nameForUpdate = sharedPreferences.getString(USERNAME, "");
+        nameForUpdate = sharedPreferences.getString(FULL_EMAIL, "");
         score = sharedPreferences.getString(SCORE,"");
+        binding.editEmail.setEnabled(false);
 
-        databaseReference.child("users").child(sharedPreferences.getString(EMAIL, "")).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-              @Override
-              public void onComplete(@NonNull Task<DataSnapshot> task) {
-                  if (task.isSuccessful()) {
-                      User user = task.getResult().getValue(User.class);
-                      emailET.setEnabled(false);
-                      assert user != null;
-                      emailET.setText(user.getEmail());
-                      usernameET.setText(user.getUsername());
-                      Picasso.get().load(user.getImage()).into(imageView);
-                      imgPath = user.getImage();
-                  }
-              }
-          });
+        RoomDatabaseManager roomDatabaseManager = new RoomDatabaseManager(getActivity());
 
-//        databaseReference.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot datasnapshot) {
-//                for(DataSnapshot snapshot : datasnapshot.getChildren()){
-//                    User user = snapshot.getValue(User.class);
-//                    if (user != null && user.getUsername().equals(sharedPreferences.getString(USERNAME, ""))) {
-//                        emailET.setEnabled(false);
-//                        emailET.setText(user.getEmail());
-//                        usernameET.setText(user.getUsername());
-//                        Picasso.get().load(user.getImage()).into(imageView);
-//                        uid = snapshot.getKey();
-//                        imgPath = user.getImage();
-//                        break;
-//                    }
-//
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//
-//            }
-//        });
+        List<User> userData = roomDatabaseManager.getUserByEmail(nameForUpdate);
+        binding.editEmail.setEnabled(false);
+        binding.editEmail.setText(userData.get(0).getEmail());
+        binding.editUsername.setText(userData.get(0).getUsername());
+        Picasso.get().load(userData.get(0).getImage()).into(binding.editPic);
+        imgPath = userData.get(0).getImage();
 
         binding.editBackBtn.setOnClickListener(item -> getParentFragmentManager().popBackStack());
 
         binding.editSave.setOnClickListener(item -> {
             if(picChanged){
-                imgPath = "https://firebasestorage.googleapis.com/v0/b/finalprojectandroind.appspot.com/o/places%2F" + uploadImage() + "?alt=media";
+                imgPath = "https://firebasestorage.googleapis.com/v0/b/finalprojectandroind.appspot.com/o/images%2F" + uploadImage() + "?alt=media";
                 Toast.makeText(getActivity(),
                         "Profile picture Changed",
                               Toast.LENGTH_LONG).show();
@@ -137,7 +109,7 @@ public class EditProfile extends Fragment {
                 public void onDataChange(@NonNull DataSnapshot datasnapshot) {
                     for(DataSnapshot snapshot : datasnapshot.getChildren()){
                         Pictures pic = snapshot.getValue(Pictures.class);
-                        if (pic != null && pic.getUsername().equals(nameForUpdate)) {
+                        if (pic != null && pic.getEmail().equals(nameForUpdate)) {
                             databaseReference
                                     .child("places")
                                     .child(Objects.requireNonNull(snapshot.getKey()))
@@ -155,7 +127,9 @@ public class EditProfile extends Fragment {
             sharedPreferences.edit().putString(USERNAME,binding.editUsername.
                                                           getText().
                                                           toString()).apply();
-            getProfilePage().updateRecycler();
+
+            roomDatabaseManager.updateUser(editUser);
+
             //NavController navController = Navigation.findNavController(requireView());
             //navController.popBackStack();
             Navigation.findNavController(view).popBackStack();
@@ -214,8 +188,10 @@ public class EditProfile extends Fragment {
 
         ref.putFile(fileUri)
                 .addOnSuccessListener(taskSnapshot -> {
+//                    profilePage.refreshImage();
                 })
-                .addOnFailureListener(e -> Log.e("not ok","Not working"));
+                .addOnFailureListener(e ->
+                        Log.e("not ok","Not working"));
         return imgUID;
     }
 }

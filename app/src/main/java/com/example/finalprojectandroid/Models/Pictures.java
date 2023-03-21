@@ -24,32 +24,35 @@ import androidx.room.PrimaryKey;
 public class Pictures implements Parcelable {
     private static final String USERNAME = "username";
 
-    @PrimaryKey(autoGenerate = true)
-    private int id;
-    @ColumnInfo(name = "username")
-    private String username;
+    @PrimaryKey(autoGenerate = false)
+    @NonNull
+    private String email;
     @ColumnInfo(name = "imgUrl")
     private String image;
     @ColumnInfo(name = "country")
     private String country;
     @ColumnInfo(name = "city")
     private String city;
+    @ColumnInfo(name = "imageContent")
+    private String imageContent;
 
     public Pictures() {
     }
 
-    public Pictures(String username,String image, String country, String city) {
-        this.username = username;
+    public Pictures(@NonNull String email, String image, String country, String city, String imageContent) {
+        this.email = email;
         this.image = image;
         this.country = country;
         this.city = city;
+        this.imageContent = imageContent;
     }
 
     protected Pictures(Parcel in) {
-        username = in.readString();
+        email = in.readString();
         image = in.readString();
         country = in.readString();
         city = in.readString();
+        imageContent = in.readString();
     }
 
     public static final Creator<Pictures> CREATOR = new Creator<Pictures>() {
@@ -64,7 +67,6 @@ public class Pictures implements Parcelable {
         }
     };
 
-    public int getId() { return id; }
 
     public String getImage() {
         return image;
@@ -78,17 +80,23 @@ public class Pictures implements Parcelable {
         return city;
     }
 
-    public String getUsername() { return username; }
+    public String getEmail() { return email; }
 
-    public void setId(int id) { this.id = id; }
+    public String getImageContent() {
+        return imageContent;
+    }
 
-    public void setUsername(String username) { this.username = username; }
+    public void setEmail(String email) { this.email = email; }
 
     public void setImage(String image) { this.image = image; }
 
     public void setCountry(String country) { this.country = country; }
 
     public void setCity(String city) { this.city = city; }
+
+    public void setImageContent(String imageContent) {
+        this.imageContent = imageContent;
+    }
 
     public void getData(Context context, OnGetDataListener listener, Boolean isProfile) {
         List<Pictures> picturesList = new ArrayList<>();
@@ -106,10 +114,10 @@ public class Pictures implements Parcelable {
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                     Pictures pic = snapshot.getValue(Pictures.class);
                     if (pic != null) {
-                        if(isProfile && pic.username.equals(name)) {
+                        if(isProfile && pic.email.equals(name)) {
                             picturesList.add(pic);
                         }
-                        else if(!isProfile && !pic.username.equals(name)){
+                        else if(!isProfile && !pic.email.equals(name)){
                             picturesList.add(pic);
                         }
                     }
@@ -131,9 +139,10 @@ public class Pictures implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(username);
+        parcel.writeString(email);
         parcel.writeString(image);
         parcel.writeString(country);
         parcel.writeString(city);
+        parcel.writeString(imageContent);
     }
 }
