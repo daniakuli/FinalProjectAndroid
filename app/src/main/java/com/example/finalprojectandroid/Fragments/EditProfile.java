@@ -40,6 +40,7 @@ import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -79,26 +80,14 @@ public class EditProfile extends Fragment {
         score = sharedPreferences.getString(SCORE,"");
         binding.editEmail.setEnabled(false);
 
-        /*databaseReference.child("users").child(sharedPreferences.getString(EMAIL, "")).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-              @Override
-              public void onComplete(@NonNull Task<DataSnapshot> task) {
-                  if (task.isSuccessful()) {
-                      User user = task.getResult().getValue(User.class);
-                      binding.editEmail.setEnabled(false);
-                      assert user != null;
-                      binding.editEmail.setText(user.getEmail());
-                      binding.editUsername.setText(user.getUsername());
-                      Picasso.get().load(user.getImage()).into(binding.editPic);
-                      imgPath = user.getImage();
-                  }
-              }
-          });*/
-
-
         RoomDatabaseManager roomDatabaseManager = new RoomDatabaseManager(getActivity());
 
-        roomDatabaseManager.getUserByEmail(nameForUpdate);
-
+        List<User> userData = roomDatabaseManager.getUserByEmail(nameForUpdate);
+        binding.editEmail.setEnabled(false);
+        binding.editEmail.setText(userData.get(0).getEmail());
+        binding.editUsername.setText(userData.get(0).getUsername());
+        Picasso.get().load(userData.get(0).getImage()).into(binding.editPic);
+        imgPath = userData.get(0).getImage();
 
         binding.editBackBtn.setOnClickListener(item -> getParentFragmentManager().popBackStack());
 
@@ -138,7 +127,9 @@ public class EditProfile extends Fragment {
             sharedPreferences.edit().putString(USERNAME,binding.editUsername.
                                                           getText().
                                                           toString()).apply();
-            getProfilePage().updateRecycler();
+
+            roomDatabaseManager.updateUser(editUser);
+
             //NavController navController = Navigation.findNavController(requireView());
             //navController.popBackStack();
             Navigation.findNavController(view).popBackStack();

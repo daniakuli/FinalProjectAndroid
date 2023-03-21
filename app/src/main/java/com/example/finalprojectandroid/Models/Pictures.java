@@ -24,9 +24,8 @@ import androidx.room.PrimaryKey;
 public class Pictures implements Parcelable {
     private static final String USERNAME = "username";
 
-    @PrimaryKey(autoGenerate = true)
-    private int id;
-    @ColumnInfo(name = "email")
+    @PrimaryKey(autoGenerate = false)
+    @NonNull
     private String email;
     @ColumnInfo(name = "imgUrl")
     private String image;
@@ -38,7 +37,7 @@ public class Pictures implements Parcelable {
     public Pictures() {
     }
 
-    public Pictures(String email, String image, String country, String city) {
+    public Pictures(@NonNull String email, String image, String country, String city) {
         this.email = email;
         this.image = image;
         this.country = country;
@@ -64,7 +63,6 @@ public class Pictures implements Parcelable {
         }
     };
 
-    public int getId() { return id; }
 
     public String getImage() {
         return image;
@@ -79,8 +77,6 @@ public class Pictures implements Parcelable {
     }
 
     public String getEmail() { return email; }
-
-    public void setId(int id) { this.id = id; }
 
     public void setEmail(String email) { this.email = email; }
 

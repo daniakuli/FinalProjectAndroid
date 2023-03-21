@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
 
+import androidx.lifecycle.LiveData;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
 
@@ -26,6 +27,7 @@ import com.example.finalprojectandroid.databinding.FragmentProfilePageBinding;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,6 +83,8 @@ public class ProfilePage extends Fragment{
             picturesList = list;
         });
 
+        List<User> userData = roomDatabaseManager.getUserByEmail(email);
+        Picasso.get().load(userData.get(0).getImage()).into(binding.imageProfile);
 
         profileAdapter.setOnItemClickListener(pos -> {
             ImageDialogFragment dialogFragment = new ImageDialogFragment();
