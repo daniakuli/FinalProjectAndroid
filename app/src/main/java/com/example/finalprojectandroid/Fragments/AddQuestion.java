@@ -4,7 +4,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,7 +21,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import com.example.finalprojectandroid.Activites.Register;
+import com.example.finalprojectandroid.DataBase.ImageUtils;
 import com.example.finalprojectandroid.Models.Pictures;
 import com.example.finalprojectandroid.Models.RoomDatabaseManager;
 import com.example.finalprojectandroid.R;
@@ -36,6 +39,7 @@ import android.provider.MediaStore;
 import android.widget.Toast;
 
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.UUID;
 
@@ -43,9 +47,11 @@ public class AddQuestion extends Fragment {
     FirebaseStorage storage = FirebaseStorage.getInstance();
     StorageReference storageReference = storage.getReferenceFromUrl("gs://finalprojectandroind.appspot.com/");
     private final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-    private final DatabaseReference databaseReference = firebaseDatabase.getReferenceFromUrl("https://finalprojectandroind-default-rtdb.firebaseio.com/");
+    private final DatabaseReference databaseReference = firebaseDatabase.getReference();
+            //firebaseDatabase.getReferenceFromUrl("https://finalprojectandroind-default-rtdb.firebaseio.com/");
     Boolean picChanged = false;
     Uri fileUri;
+    String imgAsBase64 = "";
     ImageView pProfileImage;
     private static final String FULL_EMAIL = "fullEmail";
     private AddQuestionBinding binding;
@@ -74,7 +80,9 @@ public class AddQuestion extends Fragment {
                     String imgPath = "https://firebasestorage.googleapis.com/v0/b/finalprojectandroind.appspot.com/o/places%2F" + uploadImage() + "?alt=media";
                     Log.d("Check", imgPath);
                     String picID = databaseReference.child("places").push().getKey();
-                    Pictures question = new Pictures(currUser, imgPath, binding.country.getText().toString(), binding.city.getText().toString());
+                    //byte[] imageContent = ImageUtils.getImageAsByteArray(fullImagePath);
+                    Pictures question = new Pictures(currUser, imgPath, binding.country.getText().toString(), binding.city.getText().toString(), imgAsBase64);
+
                     if (picID != null) {
                         databaseReference.child("places").child(picID).setValue(question)
                                 .addOnSuccessListener(unused -> {
@@ -109,6 +117,7 @@ public class AddQuestion extends Fragment {
                         picChanged = true;
                         Intent intent = result.getData();
                         fileUri = intent.getData();
+
                         try{
                             Bitmap bitmap = MediaStore.
                                     Images.
@@ -116,6 +125,8 @@ public class AddQuestion extends Fragment {
                                     getBitmap(requireActivity().getContentResolver(),
                                             fileUri);
                             binding.profilePicReg.setImageBitmap(bitmap);
+
+                            imgAsBase64 = ImageUtils.getImageAsBase64(bitmap);
                         }
                         catch (IOException err){
                             err.printStackTrace();

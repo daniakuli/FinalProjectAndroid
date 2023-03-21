@@ -33,15 +33,18 @@ public class Pictures implements Parcelable {
     private String country;
     @ColumnInfo(name = "city")
     private String city;
+    @ColumnInfo(name = "imageContent")
+    private String imageContent;
 
     public Pictures() {
     }
 
-    public Pictures(@NonNull String email, String image, String country, String city) {
+    public Pictures(@NonNull String email, String image, String country, String city, String imageContent) {
         this.email = email;
         this.image = image;
         this.country = country;
         this.city = city;
+        this.imageContent = imageContent;
     }
 
     protected Pictures(Parcel in) {
@@ -49,6 +52,7 @@ public class Pictures implements Parcelable {
         image = in.readString();
         country = in.readString();
         city = in.readString();
+        imageContent = in.readString();
     }
 
     public static final Creator<Pictures> CREATOR = new Creator<Pictures>() {
@@ -78,6 +82,10 @@ public class Pictures implements Parcelable {
 
     public String getEmail() { return email; }
 
+    public String getImageContent() {
+        return imageContent;
+    }
+
     public void setEmail(String email) { this.email = email; }
 
     public void setImage(String image) { this.image = image; }
@@ -85,6 +93,10 @@ public class Pictures implements Parcelable {
     public void setCountry(String country) { this.country = country; }
 
     public void setCity(String city) { this.city = city; }
+
+    public void setImageContent(String imageContent) {
+        this.imageContent = imageContent;
+    }
 
     public void getData(Context context, OnGetDataListener listener, Boolean isProfile) {
         List<Pictures> picturesList = new ArrayList<>();
@@ -131,5 +143,6 @@ public class Pictures implements Parcelable {
         parcel.writeString(image);
         parcel.writeString(country);
         parcel.writeString(city);
+        parcel.writeString(imageContent);
     }
 }

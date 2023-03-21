@@ -22,18 +22,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.finalprojectandroid.DataBase.ImageUtils;
 import com.example.finalprojectandroid.Activites.Register;
 import com.example.finalprojectandroid.Models.Pictures;
 import com.example.finalprojectandroid.Models.RoomDatabaseManager;
 import com.example.finalprojectandroid.R;
 import com.example.finalprojectandroid.databinding.FragmentImageDialogBinding;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -52,6 +48,7 @@ public class ImageDialogFragment extends DialogFragment {
     private SharedPreferences sharedPreferences;
 
     private String imageUrl;
+    private String imgAsBase64 = "";
     private int pos;
     private ProfilePage profilePage;
     private Boolean picChanged = false;
@@ -118,7 +115,7 @@ public class ImageDialogFragment extends DialogFragment {
             String name = sharedPreferences.getString(FULL_EMAIL,"");
             Pictures pic = new Pictures(name,imageUrl,
                                         binding.countryET.getText().toString(),
-                                        binding.cityET.getText().toString());
+                                        binding.cityET.getText().toString(), imgAsBase64);
             changeData(pic,pos);
 
             getProfilePage().updateData(pic, pos);
@@ -192,6 +189,8 @@ public class ImageDialogFragment extends DialogFragment {
                                     getBitmap(requireActivity().getContentResolver(),
                                             fileUri);
                             binding.imageView.setImageBitmap(bitmap);
+
+                            imgAsBase64 = ImageUtils.getImageAsBase64(bitmap);
                         }
                         catch (IOException err){
                             err.printStackTrace();
