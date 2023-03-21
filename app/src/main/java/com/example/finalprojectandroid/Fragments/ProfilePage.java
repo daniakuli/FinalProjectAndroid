@@ -18,6 +18,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.LiveData;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -28,6 +29,7 @@ import com.example.finalprojectandroid.Activites.Login;
 import com.example.finalprojectandroid.Interfaces.UsersDao;
 import com.example.finalprojectandroid.Models.AppDatabase;
 import com.example.finalprojectandroid.Models.Pictures;
+import com.example.finalprojectandroid.Models.RoomDatabaseManager;
 import com.example.finalprojectandroid.R;
 import com.example.finalprojectandroid.Models.User;
 
@@ -95,12 +97,12 @@ public class ProfilePage extends Fragment{
                 String email = sharedPreferences.getString(FULL_EMAIL, "");
                 User user = userDao.getUserByEmail(email);
                 List<User> userList = userDao.getAllUsers();
-                binding.recyclerView.setLayoutManager(new GridLayoutManager(getContext(),3));
+                /*binding.recyclerView.setLayoutManager(new GridLayoutManager(getContext(),3));
                 binding.recyclerView.setHasFixedSize(true);
                 profileAdapter = new ProfileAdapter();
                 binding.recyclerView.setAdapter(profileAdapter);
                 //Log.d("yes",user.getEmail());
-                /*requireActivity().runOnUiThread(new Runnable() {
+                requireActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         String pictureUrl = user.getImage();
@@ -120,6 +122,12 @@ public class ProfilePage extends Fragment{
 
         //binding.recyclerView.setLayoutManager(new GridLayoutManager(getContext(),3));
         //binding.recyclerView.setHasFixedSize(true);
+
+        profileAdapter = new ProfileAdapter();
+        binding.recyclerView.setAdapter(profileAdapter);
+        RoomDatabaseManager roomDatabaseManager = new RoomDatabaseManager(requireContext());
+        LiveData<List<Pictures>> piclist = roomDatabaseManager.getAllPictures();
+        roomDatabaseManager.getAllPictures().observe(getViewLifecycleOwner(), profileAdapter:: addData);
 
         picturesList = new ArrayList<>();
         Pictures pictures = new Pictures();
