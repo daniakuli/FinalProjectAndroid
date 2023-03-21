@@ -20,6 +20,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 import com.example.finalprojectandroid.DataBase.ImageUtils;
 import com.example.finalprojectandroid.Models.Pictures;
@@ -91,7 +92,9 @@ public class AddQuestion extends Fragment {
                                     Toast.makeText(requireActivity(),
                                             "Question registered successfully",
                                             Toast.LENGTH_SHORT).show();
-                                    requireActivity().finish();
+                                    //requireActivity().finish();
+
+                                    Navigation.findNavController(view).navigate(R.id.action_addQuestion_to_homePage);
                                 })
                                 .addOnFailureListener(e -> Toast.makeText(requireActivity(),
                                         "Question registered failed",
