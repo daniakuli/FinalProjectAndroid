@@ -9,7 +9,7 @@ import androidx.room.RoomDatabase;
 import com.example.finalprojectandroid.Interfaces.PicturesDao;
 import com.example.finalprojectandroid.Interfaces.UsersDao;
 
-@Database(entities = {Pictures.class, User.class}, version = 14)
+@Database(entities = {Pictures.class, User.class}, version = 15)
 public abstract class AppDatabase extends RoomDatabase {
 
     private static AppDatabase instance;
